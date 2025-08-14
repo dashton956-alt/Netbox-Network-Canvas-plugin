@@ -9,7 +9,7 @@ build-backend = "setuptools.build_meta"
 name =  "netbox-network-canvas-plugin"
 version = "0.1.0"
 authors = [
-    {name = "Your Name", email = "your.email@example.com"},
+    {name = "Daniel Ashton", email = "dashton956@gmail.com"},
 ]
 description = "Interactive network topology visualization for NetBox DCIM/IPAM data with comprehensive Layer 2/Layer 3 mapping, VLAN visualization, and real-time network discovery."
 readme = "README.md"
@@ -46,4 +46,7 @@ line-length = 120
 target_version = ['py39', 'py310', 'py311', 'py312']
 
 [tool.setuptools.package-data]
-netbox_network_canvas_plugin = ["templates/**"]
+netbox_network_canvas_plugin = [
+    "templates/**/*", 
+    "static/**/*"
+]

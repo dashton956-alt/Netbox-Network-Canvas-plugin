@@ -256,17 +256,3 @@ class DashboardView(TemplateView):
             'enabled': interface.enabled,
             'connected': bool(interface.connected_endpoints),
         } for interface in interfaces]
-
-
-class TopologyDataView(View):
-    """API view for topology data"""
-    
-    def get(self, request):
-        """Get topology data as JSON"""
-        try:
-            # Use the same method from DashboardView
-            dashboard_view = DashboardView()
-            topology_data = dashboard_view._get_topology_data()
-            return JsonResponse(topology_data, safe=False)
-        except Exception as e:
-            return JsonResponse({'error': str(e)}, status=500)

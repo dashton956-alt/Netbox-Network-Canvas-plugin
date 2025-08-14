@@ -13,6 +13,8 @@ class NetworkCanvasConfig(PluginConfig):
     verbose_name = "NetBox Network Canvas Plugin"
     description = "Interactive network topology visualization for NetBox DCIM/IPAM data with comprehensive Layer 2/Layer 3 mapping, VLAN visualization, and real-time network discovery."
     version = __version__
+    author = "Daniel Ashton"
+    author_email = "dashton956@gmail.com"
     base_url = "network-canvas"
     min_version = "4.0.0"
     max_version = "4.9.9"
@@ -23,6 +25,7 @@ class NetworkCanvasConfig(PluginConfig):
         'enable_real_time_updates': False,
         'cache_topology_data': True,
     }
+    required_settings = []
 
 
 config = NetworkCanvasConfig

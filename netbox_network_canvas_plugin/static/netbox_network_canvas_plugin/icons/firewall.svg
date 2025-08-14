@@ -1,0 +1,8 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect x="4" y="8" width="24" height="16" rx="2" fill="#f39c12" stroke="#e67e22" stroke-width="1"/>
+  <path d="M8 16 L12 12 L16 16 L20 12 L24 16" stroke="#ffffff" stroke-width="2" fill="none"/>
+  <rect x="14" y="6" width="4" height="4" rx="1" fill="#e67e22"/>
+  <circle cx="8" cy="20" r="1" fill="#ffffff"/>
+  <circle cx="24" cy="20" r="1" fill="#ffffff"/>
+  <text x="16" y="21" font-family="Arial" font-size="6" text-anchor="middle" fill="#ffffff">FW</text>
+</svg>
