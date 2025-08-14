@@ -13,55 +13,79 @@
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
-/* Device Node Styles */
+/* Enhanced Device Node Styles */
 .device-node {
     cursor: pointer;
-    transition: all 0.3s ease;
-    filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.2));
+    transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
 }
 
 .device-node:hover {
-    stroke-width: 3px;
-    filter: brightness(1.2) drop-shadow(3px 3px 6px rgba(0, 0, 0, 0.3));
-    transform: scale(1.1);
+    transform: scale(1.15);
+}
+
+.device-node:hover .device-glow {
+    opacity: 0.8;
+    stroke-width: 3;
+}
+
+.device-node:hover .device-circle {
+    filter: drop-shadow(0 6px 16px rgba(0,0,0,0.3)) brightness(1.1);
 }
 
 .device-node.selected {
-    stroke: #ffc107;
-    stroke-width: 4px;
-    filter: brightness(1.3) drop-shadow(4px 4px 8px rgba(255, 193, 7, 0.4));
+    transform: scale(1.2);
 }
 
-/* Device Type Colors */
-.device-switch { fill: #007bff; }
-.device-router { fill: #dc3545; }
-.device-server { fill: #28a745; }
-.device-firewall { fill: #fd7e14; }
-.device-unknown { fill: #6c757d; }
+.device-node.selected .device-glow {
+    opacity: 1;
+    stroke-width: 4;
+    animation: pulse-glow 2s infinite;
+}
 
-/* Connection/Link Styles */
+.device-node.selected .device-circle {
+    filter: drop-shadow(0 8px 20px rgba(0,0,0,0.4)) brightness(1.2);
+}
+
+@keyframes pulse-glow {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
+}
+
+/* Device Type Colors - More vibrant and distinguishable */
+.device-circle.device-switch { stroke: #2c5aa0; }
+.device-circle.device-router { stroke: #c0392b; }
+.device-circle.device-server { stroke: #27ae60; }
+.device-circle.device-firewall { stroke: #e67e22; }
+.device-circle.device-wireless { stroke: #8e44ad; }
+.device-circle.device-unknown { stroke: #7f8c8d; }
+
+/* Connection/Link Styles - Improved visibility */
 .connection-line {
-    stroke: #495057;
+    stroke: #555555;
     stroke-width: 2px;
-    transition: all 0.2s ease;
-    opacity: 0.8;
+    transition: all 0.3s ease;
+    opacity: 0.7;
+    stroke-linecap: round;
 }
 
 .connection-line:hover {
-    stroke: #007bff;
-    stroke-width: 3px;
+    stroke: #0066cc;
+    stroke-width: 4px;
     opacity: 1;
 }
 
 .connection-active {
-    stroke: #28a745;
-    stroke-dasharray: 5,5;
-    animation: dash 2s linear infinite;
+    stroke: #339933;
+    stroke-width: 3px;
+    stroke-dasharray: 8,4;
+    animation: dash 3s linear infinite;
+    opacity: 0.9;
 }
 
 .connection-inactive {
-    stroke: #dc3545;
-    stroke-dasharray: 10,5;
+    stroke: #cc3300;
+    stroke-dasharray: 6,3;
+    opacity: 0.6;
 }
 
 @keyframes dash {
@@ -74,74 +98,118 @@
 .device-label {
     font-family: 'Roboto', sans-serif;
     font-size: 12px;
-    font-weight: 500;
+    font-weight: 600;
     fill: #333;
     text-anchor: middle;
     pointer-events: none;
     text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
 }
 
-.device-label-background {
-    fill: rgba(255, 255, 255, 0.9);
-    stroke: rgba(0, 0, 0, 0.1);
-    stroke-width: 1px;
-    rx: 3;
+.device-type-label {
+    font-family: 'Roboto', sans-serif;
+    font-size: 9px;
+    font-weight: 500;
+    fill: #666;
+    text-anchor: middle;
+    pointer-events: none;
+    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.6);
 }
 
-/* Tooltip Styles */
+.device-label-background {
+    fill: rgba(255, 255, 255, 0.95);
+    stroke: rgba(0, 0, 0, 0.2);
+    stroke-width: 1px;
+    rx: 4;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+/* Tooltip Styles - Enhanced readability */
 .topology-tooltip {
     position: absolute;
-    background: rgba(0, 0, 0, 0.9);
+    background: rgba(25, 25, 25, 0.95);
     color: white;
-    padding: 12px;
-    border-radius: 6px;
-    font-size: 12px;
+    padding: 15px;
+    border-radius: 8px;
+    font-size: 13px;
     pointer-events: none;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    max-width: 250px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+    max-width: 300px;
     z-index: 1000;
-    border-left: 4px solid #007bff;
+    border-left: 4px solid #0066cc;
+    backdrop-filter: blur(5px);
 }
 
-.topology-tooltip h6 {
-    margin: 0 0 8px 0;
-    color: #007bff;
+.topology-tooltip .tooltip-header h6 {
+    margin: 0 0 10px 0;
+    color: #66ccff;
     font-weight: bold;
+    font-size: 14px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #444;
+}
+
+.topology-tooltip .tooltip-body {
+    margin-top: 8px;
 }
 
 .topology-tooltip .tooltip-detail {
-    margin: 4px 0;
+    margin: 6px 0;
     display: flex;
     justify-content: space-between;
+    align-items: center;
 }
 
 .tooltip-detail .label {
-    font-weight: 500;
-    color: #ccc;
+    font-weight: 600;
+    color: #cccccc;
+    min-width: 80px;
 }
 
 .tooltip-detail .value {
-    color: white;
-    margin-left: 8px;
+    color: #ffffff;
+    margin-left: 12px;
+    font-weight: 500;
 }
 
-/* Control Panel */
+.tooltip-detail .status-active {
+    color: #66ff66;
+}
+
+.tooltip-detail .status-offline {
+    color: #ff6666;
+}
+
+/* Enhanced Control Panel */
 .topology-controls {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: rgba(255, 255, 255, 0.95);
-    padding: 8px;
-    border-radius: 6px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    gap: 4px;
+    background: rgba(248, 249, 250, 0.95);
+    padding: 8px 12px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     border: 1px solid #dee2e6;
-    z-index: 100;
+    backdrop-filter: blur(10px);
 }
 
 .topology-controls .btn {
-    margin: 2px;
     font-size: 11px;
-    padding: 4px 8px;
+    padding: 6px 10px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 36px;
+    height: 32px;
+}
+
+.topology-controls .btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.topology-controls .btn i {
+    font-size: 14px;
 }
 
 /* Loading Spinner */
@@ -168,40 +236,102 @@
     100% { transform: rotate(360deg); }
 }
 
-/* Legend */
-.topology-legend {
+/* Right Side Legend with Emojis */
+.topology-legend-right {
     position: absolute;
-    bottom: 10px;
-    left: 10px;
+    top: 20px;
+    right: 20px;
     background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
     padding: 12px;
-    border-radius: 6px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    border: 1px solid #dee2e6;
-    font-size: 11px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    backdrop-filter: blur(10px);
     z-index: 100;
+    min-width: 140px;
+    transition: all 0.3s ease;
 }
 
-.topology-legend h6 {
-    margin: 0 0 8px 0;
+.topology-legend-right:hover {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px);
+}
+
+.topology-legend-right .legend-title {
+    color: #495057;
+    font-weight: 600;
     font-size: 12px;
-    font-weight: bold;
-    color: #333;
+    margin-bottom: 10px;
+    text-align: center;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    padding-bottom: 6px;
 }
 
-.legend-item {
+.legend-items-vertical {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.legend-item-right {
     display: flex;
     align-items: center;
-    margin: 4px 0;
+    gap: 8px;
+    padding: 4px 6px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    cursor: pointer;
 }
 
-.legend-color {
-    width: 16px;
-    height: 16px;
+.legend-item-right:hover {
+    background: rgba(0, 123, 255, 0.1);
+    transform: translateX(3px);
+}
+
+.legend-item-right .legend-icon {
+    width: 24px;
+    height: 24px;
     border-radius: 50%;
-    margin-right: 8px;
-    border: 2px solid #fff;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    color: white;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    border: 2px solid #ffffff;
+    flex-shrink: 0;
+}
+
+.legend-item-right span {
+    font-weight: 500;
+    color: #495057;
+    font-size: 11px;
+}
+
+/* Enhanced Device Type Colors for right legend with emojis */
+.legend-item-right .legend-icon.device-switch { 
+    background: linear-gradient(135deg, #4a90e2, #2c5aa0);
+}
+
+.legend-item-right .legend-icon.device-router { 
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+}
+
+.legend-item-right .legend-icon.device-server { 
+    background: linear-gradient(135deg, #2ecc71, #27ae60);
+}
+
+.legend-item-right .legend-icon.device-firewall { 
+    background: linear-gradient(135deg, #f39c12, #e67e22);
+}
+
+.legend-item-right .legend-icon.device-wireless { 
+    background: linear-gradient(135deg, #9b59b6, #8e44ad);
+}
+
+.legend-item-right .legend-icon.device-unknown { 
+    background: linear-gradient(135deg, #95a5a6, #7f8c8d);
 }
 
 /* Stats Panel */

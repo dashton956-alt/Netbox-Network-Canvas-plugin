@@ -4,6 +4,7 @@ from django.views.generic import TemplateView
 from django.views import View
 from django.shortcuts import render
 from django.utils import timezone
+import json
 
 from netbox.views import generic
 from dcim.models import Device, Cable, Interface
@@ -48,54 +49,108 @@ class DashboardView(TemplateView):
         
         # Get topology data for visualization
         topology_data = self._get_topology_data()
-        context['topology_data_json'] = topology_data
+        context['topology_data_json'] = json.dumps(topology_data)
         
         return context
     
     def _get_topology_data(self):
         """Get network topology data for visualization"""
         try:
+            # Debug: Check if we can access Device model
+            device_count = Device.objects.count()
+            print(f"DEBUG: Found {device_count} devices in NetBox")
+            
             # Get devices with related data
             devices = Device.objects.select_related(
-                'device_type', 'site', 'device_role'
+                'device_type', 'device_type__manufacturer', 'site', 'role'
             ).prefetch_related('interfaces').all()[:50]  # Limit for performance
             
-            # Get cables/connections
-            cables = Cable.objects.select_related(
-                'a_terminations__device', 'b_terminations__device'
-            ).all()[:100]  # Limit for performance
+            print(f"DEBUG: Retrieved {len(devices)} devices for visualization")
             
-            # Serialize data
+            # Get cables/connections
+            cables = Cable.objects.all()[:100]  # Simplified query first
+            print(f"DEBUG: Retrieved {len(cables)} cables")
+            
+            # Serialize data with better error handling
             devices_data = []
             for device in devices:
-                devices_data.append({
-                    'id': device.id,
-                    'name': device.name,
-                    'device_type': {
-                        'model': device.device_type.model,
-                        'manufacturer': device.device_type.manufacturer.name
-                    },
-                    'site': {
-                        'name': device.site.name if device.site else 'Unknown'
-                    },
-                    'role': device.device_role.name if device.device_role else 'Unknown',
-                    'status': device.status,
-                    'interface_count': device.interfaces.count()
-                })
-            
-            connections_data = []
-            for cable in cables:
-                if hasattr(cable, 'a_terminations') and hasattr(cable, 'b_terminations'):
-                    connections_data.append({
-                        'id': cable.id,
-                        'type': cable.type,
-                        'status': cable.status,
-                        'length': cable.length,
-                        'a_device': getattr(cable.a_terminations, 'device_id', None) if cable.a_terminations else None,
-                        'b_device': getattr(cable.b_terminations, 'device_id', None) if cable.b_terminations else None,
+                try:
+                    device_data = {
+                        'id': device.id,
+                        'name': device.name or f'Device-{device.id}',
+                        'device_type': {
+                            'model': getattr(device.device_type, 'model', 'Unknown') if device.device_type else 'Unknown',
+                            'manufacturer': getattr(getattr(device.device_type, 'manufacturer', None), 'name', 'Unknown') if device.device_type and device.device_type.manufacturer else 'Unknown'
+                        },
+                        'site': {
+                            'name': getattr(device.site, 'name', 'Unknown') if device.site else 'Unknown'
+                        },
+                        'role': getattr(device.role, 'name', 'Unknown') if device.role else 'Unknown',
+                        'status': str(getattr(device, 'status', 'active')),
+                        'interface_count': getattr(device, 'interfaces', []).count() if hasattr(device, 'interfaces') else 0
+                    }
+                    devices_data.append(device_data)
+                    print(f"DEBUG: Processed device {device.name}")
+                except Exception as device_error:
+                    print(f"DEBUG: Error processing device {device}: {device_error}")
+                    # Add a minimal device entry
+                    devices_data.append({
+                        'id': device.id,
+                        'name': getattr(device, 'name', f'Device-{device.id}'),
+                        'device_type': {'model': 'Unknown', 'manufacturer': 'Unknown'},
+                        'site': {'name': 'Unknown'},
+                        'role': 'Unknown',
+                        'status': 'active',
+                        'interface_count': 0
                     })
             
-            return {
+            # Process cables to extract real device connections
+            # Process cables with improved connection detection
+            connections_data = []
+            for cable in cables:
+                try:
+                    # Get cable terminations to find connected devices
+                    a_device_id = None
+                    b_device_id = None
+                    
+                    # Handle different types of cable terminations
+                    if hasattr(cable, 'a_terminations'):
+                        for termination in cable.a_terminations.all():
+                            if hasattr(termination, 'device') and termination.device:
+                                a_device_id = termination.device.id
+                                break
+                            elif hasattr(termination, '_device') and termination._device:
+                                a_device_id = termination._device.id
+                                break
+                    
+                    if hasattr(cable, 'b_terminations'):
+                        for termination in cable.b_terminations.all():
+                            if hasattr(termination, 'device') and termination.device:
+                                b_device_id = termination.device.id
+                                break
+                            elif hasattr(termination, '_device') and termination._device:
+                                b_device_id = termination._device.id
+                                break
+                    
+                    # Only add connection if we have both devices
+                    if a_device_id and b_device_id and a_device_id != b_device_id:
+                        connections_data.append({
+                            'id': cable.id,
+                            'type': str(getattr(cable, 'type', 'ethernet')),
+                            'status': str(getattr(cable, 'status', 'connected')),
+                            'length': getattr(cable, 'length', None),
+                            'a_device': a_device_id,
+                            'b_device': b_device_id,
+                        })
+                        print(f"DEBUG: Found connection between devices {a_device_id} and {b_device_id}")
+                    
+                except Exception as cable_error:
+                    print(f"DEBUG: Error processing cable {cable.id}: {cable_error}")
+                    continue
+            
+            print(f"DEBUG: Found {len(connections_data)} real connections")
+            
+            result = {
                 'devices': devices_data,
                 'connections': connections_data,
                 'stats': {
@@ -103,14 +158,46 @@ class DashboardView(TemplateView):
                     'total_connections': len(connections_data)
                 }
             }
+            
+            print(f"DEBUG: Final result has {len(result['devices'])} devices")
+            return result
+            
         except Exception as e:
-            # Return minimal data on error
-            return {
-                'devices': [],
-                'connections': [],
-                'stats': {'total_devices': 0, 'total_connections': 0},
-                'error': str(e)
-            }
+            print(f"DEBUG: Major error in _get_topology_data: {str(e)}")
+            import traceback
+            traceback.print_exc()
+            
+            # Emergency fallback - try to get ANY device data
+            try:
+                devices = list(Device.objects.all()[:10])
+                print(f"DEBUG: Emergency fallback found {len(devices)} devices")
+                
+                simple_devices = []
+                for i, device in enumerate(devices):
+                    simple_devices.append({
+                        'id': getattr(device, 'id', i),
+                        'name': getattr(device, 'name', f'Device-{i}'),
+                        'device_type': {'model': 'Unknown', 'manufacturer': 'Unknown'},
+                        'site': {'name': 'Unknown'},
+                        'role': 'Unknown',
+                        'status': 'active',
+                        'interface_count': 0
+                    })
+                
+                return {
+                    'devices': simple_devices,
+                    'connections': [],
+                    'stats': {'total_devices': len(simple_devices), 'total_connections': 0},
+                    'error': f'Partial data due to error: {str(e)}'
+                }
+            except Exception as fallback_error:
+                print(f"DEBUG: Even fallback failed: {fallback_error}")
+                return {
+                    'devices': [],
+                    'connections': [],
+                    'stats': {'total_devices': 0, 'total_connections': 0},
+                    'error': f'Complete failure: {str(e)} | Fallback: {str(fallback_error)}'
+                }
 
 
 class TopologyDataView(View):
