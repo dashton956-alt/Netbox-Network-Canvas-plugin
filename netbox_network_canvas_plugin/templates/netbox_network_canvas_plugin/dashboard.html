@@ -1,0 +1,94 @@
+{% extends 'base/layout.html' %}
+{% load helpers %}
+
+{% block header %}
+    <div class="d-flex justify-content-between align-items-center">
+        <h1>Network Canvas Dashboard</h1>
+    </div>
+{% endblock header %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-12 col-xl-6">
+            <div class="card">
+                <div class="card-header">
+                    <strong>Network Topology Statistics</strong>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-2">
+                        <div class="col-4">
+                            <strong>Total Canvases:</strong>
+                        </div>
+                        <div class="col-8">
+                            <a href="{% url 'plugins:netbox_network_canvas_plugin:networktopologycanvas_list' %}">
+                                {{ stats.total_canvases }}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-12 col-xl-6">
+            <div class="card">
+                <div class="card-header">
+                    <strong>Quick Actions</strong>
+                </div>
+                <div class="card-body">
+                    <div class="btn-group-vertical w-100" role="group">
+                        <a href="{% url 'plugins:netbox_network_canvas_plugin:networktopologycanvas_add' %}" class="btn btn-primary mb-2">
+                            <i class="mdi mdi-plus-thick"></i> Create New Canvas
+                        </a>
+                        <a href="{% url 'plugins:netbox_network_canvas_plugin:networktopologycanvas_list' %}" class="btn btn-outline-dark">
+                            <i class="mdi mdi-format-list-bulleted"></i> View All Canvases
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    {% if recent_canvases %}
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <strong>Recent Canvases</strong>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Description</th>
+                                    <th>Last Updated</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for canvas in recent_canvases %}
+                                <tr>
+                                    <td>
+                                        <a href="{% url 'plugins:netbox_network_canvas_plugin:networktopologycanvas_detail' pk=canvas.pk %}">
+                                            {{ canvas.name }}
+                                        </a>
+                                    </td>
+                                    <td>{{ canvas.description|default:"-" }}</td>
+                                    <td>{{ canvas.last_updated }}</td>
+                                    <td>
+                                        <a href="{% url 'plugins:netbox_network_canvas_plugin:networktopologycanvas_edit' pk=canvas.pk %}" class="btn btn-sm btn-warning">
+                                            <i class="mdi mdi-pencil"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+{% endblock content %}

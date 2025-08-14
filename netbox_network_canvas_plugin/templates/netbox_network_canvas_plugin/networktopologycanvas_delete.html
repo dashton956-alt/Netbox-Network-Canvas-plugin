@@ -1,0 +1,100 @@
+{% extends 'base/layout.html' %}
+{% load static %}
+
+{% block title %}Delete Canvas - Network Canvas{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1>Delete Canvas</h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="{% url 'plugins:netbox_network_canvas_plugin:networktopologycanvas_list' %}">Canvas Views</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{% url 'plugins:netbox_network_canvas_plugin:networktopologycanvas_detail' pk=canvas.pk %}">{{ canvas.name }}</a>
+                </li>
+                <li class="breadcrumb-item active">Delete</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card border-danger">
+            <div class="card-header bg-danger text-white">
+                <h5 class="card-title mb-0">
+                    <i class="mdi mdi-alert"></i> Confirm Deletion
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-danger">
+                    <i class="mdi mdi-alert-circle"></i>
+                    <strong>Warning:</strong> This action cannot be undone.
+                </div>
+                
+                <p>Are you sure you want to delete the canvas <strong>"{{ canvas.name }}"</strong>?</p>
+                
+                <dl class="row">
+                    <dt class="col-sm-4">Name:</dt>
+                    <dd class="col-sm-8">{{ canvas.name }}</dd>
+                    
+                    <dt class="col-sm-4">Description:</dt>
+                    <dd class="col-sm-8">{{ canvas.description|default:"—" }}</dd>
+                    
+                    <dt class="col-sm-4">Created:</dt>
+                    <dd class="col-sm-8">{{ canvas.created|date:"M d, Y H:i" }}</dd>
+                    
+                    <dt class="col-sm-4">Updated:</dt>
+                    <dd class="col-sm-8">{{ canvas.updated|date:"M d, Y H:i" }}</dd>
+                </dl>
+                
+                <form method="post" class="mt-4">
+                    {% csrf_token %}
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'plugins:netbox_network_canvas_plugin:networktopologycanvas_detail' pk=canvas.pk %}" 
+                           class="btn btn-secondary">
+                            <i class="mdi mdi-arrow-left"></i> Cancel
+                        </a>
+                        <button type="submit" class="btn btn-danger">
+                            <i class="mdi mdi-trash-can"></i> Delete Canvas
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title">What will be deleted?</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled">
+                    <li class="mb-2">
+                        <i class="mdi mdi-check text-danger"></i>
+                        Canvas configuration and settings
+                    </li>
+                    <li class="mb-2">
+                        <i class="mdi mdi-check text-danger"></i>
+                        Stored topology data and layout
+                    </li>
+                    <li class="mb-2">
+                        <i class="mdi mdi-check text-danger"></i>
+                        Custom visualization settings
+                    </li>
+                </ul>
+                
+                <div class="alert alert-info mt-3">
+                    <i class="mdi mdi-information"></i>
+                    <strong>Note:</strong> This will only delete the canvas view. 
+                    Your NetBox device and network data will remain unchanged.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

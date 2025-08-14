@@ -1,0 +1,42 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "netbox-network-canvas-plugin"
+version = "0.1.0"
+description = "Interactive Layer 2 and Layer 3 network topology visualization for NetBox"
+authors = [
+    {name = "Dan Ashton", email = "dashton956@gmail.com"}
+]
+license = {text = "MIT"}
+readme = "plugin_README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Framework :: Django",
+    "Intended Audience :: System Administrators",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: System :: Networking",
+]
+keywords = ["netbox", "network", "topology", "visualization"]
+
+dependencies = [
+    "django",
+    "django-tables2",
+    "django-filter",
+]
+
+[project.urls]
+Homepage = "https://github.com/dashton956-alt/Netbox-Network-Canvas"
+Repository = "https://github.com/dashton956-alt/Netbox-Network-Canvas.git"
+Issues = "https://github.com/dashton956-alt/Netbox-Network-Canvas/issues"
+
+[tool.setuptools.packages.find]
+include = ["netbox_network_canvas_plugin*"]

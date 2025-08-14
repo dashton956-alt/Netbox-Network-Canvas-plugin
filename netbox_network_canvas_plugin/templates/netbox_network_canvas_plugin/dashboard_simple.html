@@ -1,0 +1,456 @@
+{% extends 'base/layout.html' %}
+{% load static %}
+
+{% block title %}Network Canvas Dashboard{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" type="text/css" href="{% static 'netbox_network_canvas_plugin/topology.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1>Network Canvas Dashboard</h1>
+                <p class="text-muted">Interactive Layer 2 and Layer 3 network topology visualization</p>
+            </div>
+            <div>
+                <a href="{% url 'plugins:netbox_network_canvas_plugin:networktopologycanvas_list' %}" class="btn btn-outline-primary">
+                    <i class="mdi mdi-view-list"></i> View All Canvases
+                </a>
+                <a href="{% url 'plugins:netbox_network_canvas_plugin:networktopologycanvas_add' %}" class="btn btn-success">
+                    <i class="mdi mdi-plus"></i> Create Canvas
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Network Statistics -->
+<div class="topology-stats">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="stat-item">
+                <span class="stat-number">{{ device_count }}</span>
+                <span class="stat-label">Devices</span>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-item">
+                <span class="stat-number">{{ canvas_count }}</span>
+                <span class="stat-label">Canvas Views</span>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-item">
+                <span class="stat-number">{{ vlan_count }}</span>
+                <span class="stat-label">VLANs</span>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-item">
+                <span class="stat-number">{{ cable_count }}</span>
+                <span class="stat-label">Connections</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">Live Network Topology</h5>
+                <div class="topology-controls">
+                    <button id="refresh-btn" class="btn btn-primary btn-sm">
+                        <i class="mdi mdi-refresh"></i> Refresh
+                    </button>
+                    <button id="zoom-fit-btn" class="btn btn-outline-secondary btn-sm">
+                        <i class="mdi mdi-fit-to-page"></i> Fit
+                    </button>
+                    <button id="toggle-labels-btn" class="btn btn-outline-secondary btn-sm">
+                        <i class="mdi mdi-label"></i> Labels
+                    </button>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                <div id="topology-container" class="topology-container" style="width: 100%; height: 600px; position: relative;">
+                    <div id="loading" class="topology-loading">
+                        <div class="topology-loading">
+                            <div class="spinner"></div>
+                            <p class="mt-3">Loading network topology...</p>
+                        </div>
+                    </div>
+                    <svg id="network-svg" width="100%" height="100%" style="display: none;"></svg>
+                    
+                    <!-- Legend -->
+                    <div class="topology-legend">
+                        <h6>Device Types</h6>
+                        <div class="legend-item">
+                            <div class="legend-color device-switch"></div>
+                            <span>Switch</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color device-router"></div>
+                            <span>Router</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color device-server"></div>
+                            <span>Server</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color device-firewall"></div>
+                            <span>Firewall</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Initializing Enhanced Network Topology Visualization...');
+    
+    const svg = d3.select('#network-svg');
+    const container = document.getElementById('topology-container');
+    const width = container.clientWidth;
+    const height = container.clientHeight;
+    
+    let showLabels = true;
+    let currentTransform = d3.zoomIdentity;
+    
+    svg.attr('viewBox', `0 0 ${width} ${height}`);
+    
+    // Add zoom behavior
+    const zoom = d3.zoom()
+        .scaleExtent([0.1, 4])
+        .on('zoom', (event) => {
+            currentTransform = event.transform;
+            g.attr('transform', event.transform);
+        });
+    
+    svg.call(zoom);
+    
+    const g = svg.append('g');
+    
+    try {
+        // Get data from Django template - enhanced error handling
+        const rawData = '{{ topology_data_json|escapejs }}';
+        console.log('Raw data received:', rawData ? 'Data loaded' : 'No data');
+        
+        if (!rawData || rawData.length < 10) {
+            throw new Error('No topology data available from NetBox');
+        }
+        
+        const topologyData = JSON.parse(rawData);
+        console.log('Topology data parsed successfully:', topologyData);
+        
+        if (!topologyData.devices || topologyData.devices.length === 0) {
+            throw new Error('No devices found in NetBox. Please add some devices first.');
+        }
+        
+        console.log(`Loaded ${topologyData.devices.length} devices and ${topologyData.connections?.length || 0} connections`);
+        
+        createVisualization(topologyData);
+        
+    } catch (error) {
+        console.error('Error loading topology:', error);
+        showError(error.message);
+    }
+    
+    function createVisualization(data) {
+        // Convert devices to D3 nodes with enhanced properties
+        const nodes = data.devices.map(device => ({
+            id: device.id,
+            name: device.name,
+            type: getDeviceType(device.device_type.model),
+            site: device.site.name,
+            role: device.role,
+            status: device.status,
+            deviceType: device.device_type.model,
+            manufacturer: device.device_type.manufacturer,
+            interfaceCount: device.interface_count || 0,
+            x: Math.random() * (width - 100) + 50,
+            y: Math.random() * (height - 100) + 50
+        }));
+        
+        // Create links from connections data or simple chain
+        let links = [];
+        if (data.connections && data.connections.length > 0) {
+            // Use real connection data
+            links = data.connections
+                .filter(conn => conn.a_device && conn.b_device)
+                .map(conn => {
+                    const source = nodes.find(n => n.id === conn.a_device);
+                    const target = nodes.find(n => n.id === conn.b_device);
+                    if (source && target) {
+                        return {
+                            source: source,
+                            target: target,
+                            type: conn.type,
+                            status: conn.status,
+                            length: conn.length
+                        };
+                    }
+                    return null;
+                }).filter(link => link !== null);
+        } else {
+            // Fallback: create a simple chain topology
+            for (let i = 0; i < nodes.length - 1; i++) {
+                links.push({
+                    source: nodes[i],
+                    target: nodes[i + 1],
+                    type: 'ethernet',
+                    status: 'connected'
+                });
+            }
+        }
+        
+        console.log(`Created visualization with ${nodes.length} nodes and ${links.length} links`);
+        
+        // Create force simulation with improved forces
+        const simulation = d3.forceSimulation(nodes)
+            .force('link', d3.forceLink(links).id(d => d.id).distance(100).strength(0.5))
+            .force('charge', d3.forceManyBody().strength(-300).distanceMax(400))
+            .force('center', d3.forceCenter(width / 2, height / 2))
+            .force('collision', d3.forceCollide().radius(25))
+            .force('x', d3.forceX(width / 2).strength(0.1))
+            .force('y', d3.forceY(height / 2).strength(0.1));
+        
+        // Draw connections
+        const linkGroup = g.append('g').attr('class', 'links');
+        const linkElements = linkGroup
+            .selectAll('line')
+            .data(links)
+            .enter()
+            .append('line')
+            .attr('class', 'connection-line')
+            .attr('stroke', '#495057')
+            .attr('stroke-width', d => getConnectionWidth(d))
+            .style('opacity', 0.7);
+        
+        // Draw nodes
+        const nodeGroup = g.append('g').attr('class', 'nodes');
+        const nodeElements = nodeGroup
+            .selectAll('g')
+            .data(nodes)
+            .enter()
+            .append('g')
+            .attr('class', 'device-node')
+            .style('cursor', 'pointer');
+        
+        // Add node circles
+        nodeElements.append('circle')
+            .attr('r', d => getNodeRadius(d))
+            .attr('class', d => `device-${d.type}`)
+            .attr('stroke', '#fff')
+            .attr('stroke-width', 2);
+        
+        // Add device icons (text-based for now)
+        nodeElements.append('text')
+            .attr('class', 'device-icon')
+            .attr('text-anchor', 'middle')
+            .attr('dy', '0.35em')
+            .attr('font-size', '14px')
+            .attr('fill', 'white')
+            .text(d => getDeviceIcon(d.type));
+        
+        // Add labels
+        const labelGroup = g.append('g').attr('class', 'labels');
+        const labelElements = labelGroup
+            .selectAll('g')
+            .data(nodes)
+            .enter()
+            .append('g');
+        
+        // Label background
+        labelElements.append('rect')
+            .attr('class', 'device-label-background')
+            .attr('width', d => Math.max(d.name.length * 7, 50))
+            .attr('height', 16)
+            .attr('x', d => -Math.max(d.name.length * 7, 50) / 2)
+            .attr('y', -30);
+        
+        // Label text
+        labelElements.append('text')
+            .attr('class', 'device-label')
+            .text(d => d.name.length > 12 ? d.name.substring(0, 12) + '...' : d.name)
+            .attr('y', -22);
+        
+        // Update positions on simulation tick
+        simulation.on('tick', () => {
+            linkElements
+                .attr('x1', d => d.source.x)
+                .attr('y1', d => d.source.y)
+                .attr('x2', d => d.target.x)
+                .attr('y2', d => d.target.y);
+            
+            nodeElements.attr('transform', d => `translate(${d.x},${d.y})`);
+            labelElements.attr('transform', d => `translate(${d.x},${d.y})`);
+        });
+        
+        // Add enhanced drag behavior
+        nodeElements.call(d3.drag()
+            .on('start', dragstarted)
+            .on('drag', dragged)
+            .on('end', dragended));
+        
+        function dragstarted(event, d) {
+            if (!event.active) simulation.alphaTarget(0.3).restart();
+            d.fx = d.x;
+            d.fy = d.y;
+            d3.select(this).select('circle').attr('stroke-width', 4);
+        }
+        
+        function dragged(event, d) {
+            d.fx = event.x;
+            d.fy = event.y;
+        }
+        
+        function dragended(event, d) {
+            if (!event.active) simulation.alphaTarget(0);
+            d.fx = null;
+            d.fy = null;
+            d3.select(this).select('circle').attr('stroke-width', 2);
+        }
+        
+        // Enhanced tooltips
+        nodeElements
+            .on('mouseover', function(event, d) {
+                showTooltip(event, d);
+                d3.select(this).select('circle').classed('selected', true);
+            })
+            .on('mouseout', function(event, d) {
+                hideTooltip();
+                d3.select(this).select('circle').classed('selected', false);
+            })
+            .on('click', function(event, d) {
+                console.log('Clicked device:', d);
+                // Could add device detail modal here
+            });
+        
+        // Control buttons
+        document.getElementById('refresh-btn').addEventListener('click', () => {
+            location.reload();
+        });
+        
+        document.getElementById('zoom-fit-btn').addEventListener('click', () => {
+            const bounds = g.node().getBBox();
+            const fullWidth = width;
+            const fullHeight = height;
+            const widthScale = fullWidth / bounds.width;
+            const heightScale = fullHeight / bounds.height;
+            const scale = Math.min(widthScale, heightScale) * 0.9;
+            const translate = [
+                (fullWidth - bounds.width * scale) / 2 - bounds.x * scale,
+                (fullHeight - bounds.height * scale) / 2 - bounds.y * scale
+            ];
+            
+            svg.transition()
+                .duration(750)
+                .call(zoom.transform, d3.zoomIdentity.translate(translate[0], translate[1]).scale(scale));
+        });
+        
+        document.getElementById('toggle-labels-btn').addEventListener('click', () => {
+            showLabels = !showLabels;
+            labelElements.style('display', showLabels ? 'block' : 'none');
+            document.getElementById('toggle-labels-btn').innerHTML = 
+                showLabels ? '<i class="mdi mdi-label"></i> Labels' : '<i class="mdi mdi-label-off"></i> Labels';
+        });
+        
+        // Show visualization
+        d3.select('#loading').style('display', 'none');
+        svg.style('display', 'block');
+        
+        console.log('Network topology visualization loaded successfully!');
+    }
+    
+    function showTooltip(event, d) {
+        const tooltip = d3.select('body')
+            .append('div')
+            .attr('class', 'topology-tooltip')
+            .style('left', (event.pageX + 10) + 'px')
+            .style('top', (event.pageY - 10) + 'px');
+        
+        tooltip.html(`
+            <h6>${d.name}</h6>
+            <div class="tooltip-detail">
+                <span class="label">Type:</span>
+                <span class="value">${d.deviceType}</span>
+            </div>
+            <div class="tooltip-detail">
+                <span class="label">Site:</span>
+                <span class="value">${d.site}</span>
+            </div>
+            <div class="tooltip-detail">
+                <span class="label">Role:</span>
+                <span class="value">${d.role}</span>
+            </div>
+            <div class="tooltip-detail">
+                <span class="label">Manufacturer:</span>
+                <span class="value">${d.manufacturer}</span>
+            </div>
+            <div class="tooltip-detail">
+                <span class="label">Interfaces:</span>
+                <span class="value">${d.interfaceCount}</span>
+            </div>
+        `);
+    }
+    
+    function hideTooltip() {
+        d3.selectAll('.topology-tooltip').remove();
+    }
+    
+    function showError(message) {
+        d3.select('#loading').html(`
+            <div class="text-center">
+                <i class="mdi mdi-alert-circle" style="font-size: 48px; color: #dc3545;"></i>
+                <h5 class="mt-3 text-danger">Visualization Error</h5>
+                <p class="text-muted">${message}</p>
+                <p class="text-muted">Make sure you have devices configured in NetBox.</p>
+                <button class="btn btn-primary" onclick="location.reload()">Reload</button>
+            </div>
+        `);
+    }
+    
+    // Helper functions
+    function getDeviceType(model) {
+        const modelLower = model.toLowerCase();
+        if (modelLower.includes('switch') || modelLower.includes('catalyst') || modelLower.includes('nexus')) return 'switch';
+        if (modelLower.includes('router') || modelLower.includes('isr') || modelLower.includes('mx') || modelLower.includes('asr')) return 'router';
+        if (modelLower.includes('server') || modelLower.includes('poweredge') || modelLower.includes('proliant')) return 'server';
+        if (modelLower.includes('firewall') || modelLower.includes('pa-') || modelLower.includes('asa')) return 'firewall';
+        return 'unknown';
+    }
+    
+    function getDeviceIcon(type) {
+        const icons = {
+            'switch': '⚡',
+            'router': '🔀',
+            'server': '💻',
+            'firewall': '🛡️',
+            'unknown': '❓'
+        };
+        return icons[type] || icons.unknown;
+    }
+    
+    function getNodeRadius(device) {
+        const baseRadius = 20;
+        const interfaceBonus = Math.min(device.interfaceCount * 2, 10);
+        return baseRadius + interfaceBonus;
+    }
+    
+    function getConnectionWidth(link) {
+        if (link.status === 'connected') return 2;
+        if (link.status === 'planned') return 1;
+        return 1;
+    }
+});
+</script>
+{% endblock %}

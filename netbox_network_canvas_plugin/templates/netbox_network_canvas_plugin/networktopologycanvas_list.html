@@ -1,0 +1,173 @@
+{% extends 'base/layout.html' %}
+{% load static %}
+{% load render_table from django_tables2 %}
+
+{% block title %}Network Canvas Views{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1>Canvas Views</h1>
+                <div>
+                    <a href="{% url 'plugins:netbox_network_canvas_plugin:dashboard' %}" class="btn btn-info">
+                        <i class="mdi mdi-chart-network"></i> Dashboard
+                    </a>
+                    <a href="{% url 'plugins:netbox_network_canvas_plugin:networktopologycanvas_add' %}" class="btn btn-success">
+                        <i class="mdi mdi-plus"></i> Add Canvas
+                    </a>
+                </div>
+    </div>
+</div>
+
+<!-- Search/Filter Form -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h6 class="card-title mb-0">
+                    <i class="mdi mdi-filter"></i> Search & Filter
+                </h6>
+            </div>
+            <div class="card-body">
+                <form method="get" class="row g-3">
+                    <div class="col-md-6">
+                        <input type="text" name="name" class="form-control" 
+                               placeholder="Canvas name..." value="{{ request.GET.name }}">
+                    </div>
+                    <div class="col-md-4">
+                        <input type="text" name="description" class="form-control" 
+                               placeholder="Description..." value="{{ request.GET.description }}">
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="mdi mdi-magnify"></i> Search
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">Canvas Views</h5>
+                <small class="text-muted">{{ canvases.count }} canvas{{ canvases.count|pluralize:"es" }}</small>
+            </div>
+            <div class="card-body">
+                {% if canvases %}
+                    <div class="table-responsive">
+                        {% render_table table %}
+                    </div>
+                {% else %}
+                    <div class="text-center py-5">
+                        <i class="mdi mdi-chart-network" style="font-size: 64px; color: #6c757d;"></i>
+                        <h4 class="mt-3 text-muted">No Canvas Views Found</h4>
+                        <p class="text-muted">Create your first network topology canvas to get started.</p>
+                        <a href="{% url 'plugins:netbox_network_canvas_plugin:networktopologycanvas_add' %}" class="btn btn-success">
+                            <i class="mdi mdi-plus-thick"></i> Create First Canvas
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Statistics Card -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h6 class="card-title mb-0">
+                    <i class="mdi mdi-chart-bar"></i> Quick Stats
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-md-3">
+                        <div class="stat-item">
+                            <span class="stat-number">{{ canvases.count }}</span>
+                            <span class="stat-label">Canvas Views</span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-item">
+                            <span class="stat-number">{{ device_count|default:0 }}</span>
+                            <span class="stat-label">Total Devices</span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-item">
+                            <span class="stat-number">{{ vlan_count|default:0 }}</span>
+                            <span class="stat-label">VLANs</span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-item">
+                            <span class="stat-number">{{ cable_count|default:0 }}</span>
+                            <span class="stat-label">Connections</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+                                            <a href="{% url 'plugins:netbox_network_canvas_plugin:networktopologycanvas_detail' pk=canvas.pk %}" 
+                                               class="btn btn-sm btn-outline-primary" title="View">
+                                                <i class="mdi mdi-eye"></i>
+                                            </a>
+                                            <a href="{% url 'plugins:netbox_network_canvas_plugin:networktopologycanvas_edit' pk=canvas.pk %}" 
+                                               class="btn btn-sm btn-outline-warning" title="Edit">
+                                                <i class="mdi mdi-pencil"></i>
+                                            </a>
+                                            <a href="{% url 'plugins:netbox_network_canvas_plugin:networktopologycanvas_delete' pk=canvas.pk %}" 
+                                               class="btn btn-sm btn-outline-danger" title="Delete">
+                                                <i class="mdi mdi-trash-can"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-5">
+                        <div class="text-muted mb-3">
+                            <i class="mdi mdi-network-outline" style="font-size: 3rem;"></i>
+                        </div>
+                        <h5>No Canvas Views Found</h5>
+                        <p class="text-muted">Get started by creating your first network topology canvas.</p>
+                        <a href="{% url 'plugins:netbox_network_canvas_plugin:networktopologycanvas_add' %}" class="btn btn-primary">
+                            <i class="mdi mdi-plus-thick"></i> Create Canvas
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title">About Network Canvas</h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted">
+                    Network Canvas provides interactive Layer 2 and Layer 3 network topology visualization 
+                    for your NetBox infrastructure. Create custom views to visualize device relationships, 
+                    VLAN configurations, and IP network topologies.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

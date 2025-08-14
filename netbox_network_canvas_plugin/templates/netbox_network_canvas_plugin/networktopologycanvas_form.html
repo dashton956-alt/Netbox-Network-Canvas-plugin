@@ -1,0 +1,82 @@
+{% extends 'base/layout.html' %}
+{% load helpers %}
+
+{% block title %}
+{% if object.pk %}Edit {{ object }}{% else %}Add Network Canvas{% endif %}
+{% endblock %}
+
+{% block header %}
+<div class="d-flex justify-content-between align-items-center">
+    <h1>{% if object.pk %}Edit {{ object }}{% else %}Add Network Canvas{% endif %}</h1>
+</div>
+{% endblock header %}
+
+{% block content %}
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <h5 class="card-header">Canvas Details</h5>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label for="{{ form.name.id_for_label }}" class="form-label">{{ form.name.label }}</label>
+                        {{ form.name }}
+                        {% if form.name.help_text %}
+                            <small class="form-text text-muted">{{ form.name.help_text }}</small>
+                        {% endif %}
+                        {% if form.name.errors %}
+                            <div class="invalid-feedback">{{ form.name.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.description.id_for_label }}" class="form-label">{{ form.description.label }}</label>
+                        {{ form.description }}
+                        {% if form.description.help_text %}
+                            <small class="form-text text-muted">{{ form.description.help_text }}</small>
+                        {% endif %}
+                        {% if form.description.errors %}
+                            <div class="invalid-feedback">{{ form.description.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.topology_data.id_for_label }}" class="form-label">{{ form.topology_data.label }}</label>
+                        {{ form.topology_data }}
+                        {% if form.topology_data.help_text %}
+                            <small class="form-text text-muted">{{ form.topology_data.help_text }}</small>
+                        {% endif %}
+                        {% if form.topology_data.errors %}
+                            <div class="invalid-feedback">{{ form.topology_data.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.tags.id_for_label }}" class="form-label">{{ form.tags.label }}</label>
+                        {{ form.tags }}
+                        {% if form.tags.help_text %}
+                            <small class="form-text text-muted">{{ form.tags.help_text }}</small>
+                        {% endif %}
+                        {% if form.tags.errors %}
+                            <div class="invalid-feedback">{{ form.tags.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row mt-3">
+        <div class="col">
+            <button type="submit" class="btn btn-primary">
+                <i class="mdi mdi-check"></i> {% if object.pk %}Update{% else %}Create{% endif %}
+            </button>
+            <a href="{% url 'plugins:netbox_network_canvas_plugin:networktopologycanvas_list' %}" class="btn btn-secondary">
+                <i class="mdi mdi-close"></i> Cancel
+            </a>
+        </div>
+    </div>
+</form>
+{% endblock content %}
