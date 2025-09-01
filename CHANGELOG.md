@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.2 (2025-09-01)
+
+### Improvements
+* Added GitHub Actions workflow for automated PyPI publishing
+* Enhanced project structure with proper CI/CD pipeline
+* Updated documentation and release process
+* Prepared for public PyPI distribution
+
 ## 0.1.1 (2025-09-01)
 
 ### Features
