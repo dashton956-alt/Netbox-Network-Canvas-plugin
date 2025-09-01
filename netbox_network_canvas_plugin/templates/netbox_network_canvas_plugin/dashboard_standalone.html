@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Network Topology Canvas - NetBox</title>
+    
+    <!-- Bootstrap CSS from CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Material Design Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@7.2.96/css/materialdesignicons.min.css" rel="stylesheet">
+    
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+        
+        .navbar-brand {
+            font-weight: 600;
+        }
+        
+        .card {
+            border: none;
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+            border-radius: 0.375rem;
+        }
+        
+        .card-header {
+            background-color: white;
+            border-bottom: 1px solid #dee2e6;
+            font-weight: 600;
+        }
+        
+        .stat-card {
+            transition: transform 0.2s;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-2px);
+        }
+        
+        .legend {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 0.375rem;
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        }
+        
+        .device-node {
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .device-node:hover {
+            filter: brightness(1.1);
+        }
+        
+        .link {
+            transition: stroke-width 0.2s;
+        }
+        
+        .link:hover {
+            stroke-width: 3px;
+        }
+        
+        #topology-container {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 0.375rem;
+        }
+        
+        .tooltip-custom {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            pointer-events: none;
+            z-index: 1000;
+            max-width: 300px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <i class="mdi mdi-lan-connect me-2"></i>
+                NetBox Network Canvas
+            </a>
+            <div class="navbar-nav ms-auto">
+                <span class="navbar-text text-light">
+                    <i class="mdi mdi-chart-network"></i>
+                    Interactive Network Topology
+                </span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid mt-4">
+        <!-- Statistics Cards -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card stat-card bg-primary text-white">
+                    <div class="card-body text-center">
+                        <i class="mdi mdi-server-network display-6 mb-2"></i>
+                        <h5 class="card-title">Devices</h5>
+                        <h2 class="mb-0">{{ device_count|default:"0" }}</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stat-card bg-success text-white">
+                    <div class="card-body text-center">
+                        <i class="mdi mdi-cable-data display-6 mb-2"></i>
+                        <h5 class="card-title">Connections</h5>
+                        <h2 class="mb-0">{{ cable_count|default:"0" }}</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stat-card bg-info text-white">
+                    <div class="card-body text-center">
+                        <i class="mdi mdi-office-building display-6 mb-2"></i>
+                        <h5 class="card-title">Sites</h5>
+                        <h2 class="mb-0">{{ site_count|default:"0" }}</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stat-card bg-warning text-white">
+                    <div class="card-body text-center">
+                        <i class="mdi mdi-shape display-6 mb-2"></i>
+                        <h5 class="card-title">Device Types</h5>
+                        <h2 class="mb-0">{{ device_type_count|default:"0" }}</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Control Panel -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="mdi mdi-tune me-2"></i>
+                            Visualization Controls
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label for="layoutSelect" class="form-label">Layout Algorithm</label>
+                                <select id="layoutSelect" class="form-select">
+                                    <option value="force">Force-Directed</option>
+                                    <option value="hierarchy">Hierarchical</option>
+                                    <option value="circular">Circular</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="deviceFilter" class="form-label">Device Type Filter</label>
+                                <select id="deviceFilter" class="form-select">
+                                    <option value="all">All Device Types</option>
+                                    <option value="router">Routers</option>
+                                    <option value="switch">Switches</option>
+                                    <option value="firewall">Firewalls</option>
+                                    <option value="server">Servers</option>
+                                    <option value="wireless">Wireless</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">View Controls</label>
+                                <div class="btn-group d-block" role="group">
+                                    <button type="button" class="btn btn-outline-secondary" id="zoomIn">
+                                        <i class="mdi mdi-magnify-plus"></i> Zoom In
+                                    </button>
+                                    <button type="button" class="btn btn-outline-secondary" id="zoomOut">
+                                        <i class="mdi mdi-magnify-minus"></i> Zoom Out
+                                    </button>
+                                    <button type="button" class="btn btn-outline-secondary" id="resetView">
+                                        <i class="mdi mdi-restore"></i> Reset
+                                    </button>
+                                    <button type="button" class="btn btn-outline-primary" id="exportSVG">
+                                        <i class="mdi mdi-export"></i> Export
+                                    </button>
+                                    <button type="button" class="btn btn-outline-success" id="refreshData">
+                                        <i class="mdi mdi-refresh"></i> Refresh
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Visualization -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">
+                            <i class="mdi mdi-graph me-2"></i>
+                            Network Topology Visualization
+                        </h5>
+                        <div class="badge bg-primary">
+                            {{ device_count|default:"0" }} devices visualized
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        <div id="topology-container" style="width: 100%; height: 700px; position: relative;">
+                            <!-- Loading overlay -->
+                            <div id="loading-overlay" class="d-flex justify-content-center align-items-center h-100" 
+                                 style="position: absolute; top: 0; left: 0; width: 100%; background: rgba(248, 249, 250, 0.9); z-index: 1000;">
+                                <div class="text-center">
+                                    <div class="spinner-border text-primary" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                    <p class="mt-2 text-muted">Loading network topology...</p>
+                                </div>
+                            </div>
+                            
+                            <!-- SVG container -->
+                            <svg id="network-svg" width="100%" height="700">
+                                <!-- Defs for arrows and gradients -->
+                                <defs>
+                                    <marker id="arrowhead" markerWidth="10" markerHeight="7" 
+                                            refX="9" refY="3.5" orient="auto">
+                                        <polygon points="0 0, 10 3.5, 0 7" fill="#666" />
+                                    </marker>
+                                    
+                                    <linearGradient id="deviceGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                                        <stop offset="0%" style="stop-color:#ffffff;stop-opacity:1" />
+                                        <stop offset="100%" style="stop-color:#f8f9fa;stop-opacity:1" />
+                                    </linearGradient>
+                                </defs>
+                            </svg>
+                            
+                            <!-- Legend -->
+                            <div id="legend" class="legend position-absolute" style="top: 15px; right: 15px; padding: 15px; max-width: 200px;">
+                                <h6 class="mb-2">
+                                    <i class="mdi mdi-format-list-bulleted me-1"></i>
+                                    Device Types
+                                </h6>
+                                <div id="legend-items"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tooltip -->
+    <div id="device-tooltip" class="tooltip-custom" style="display: none;"></div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    
+    <script>
+        console.log('🚀 Network Canvas - Professional Dashboard Loading...');
+
+        // Global variables
+        let simulation, svg, container, zoom, tooltip;
+        let nodes = [], links = [];
+        let width, height;
+
+        // Device type configurations
+        const deviceConfig = {
+            'router': { 
+                color: '#dc3545', 
+                icon: 'router',
+                shape: 'rect'
+            },
+            'switch': { 
+                color: '#007bff', 
+                icon: 'switch',
+                shape: 'rect'
+            },
+            'firewall': { 
+                color: '#fd7e14', 
+                icon: 'security',
+                shape: 'rect'
+            },
+            'server': { 
+                color: '#28a745', 
+                icon: 'server',
+                shape: 'rect'
+            },
+            'wireless': { 
+                color: '#6f42c1', 
+                icon: 'wifi',
+                shape: 'circle'
+            },
+            'default': { 
+                color: '#6c757d', 
+                icon: 'help-circle',
+                shape: 'circle'
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('✅ DOM loaded - Initializing Network Canvas');
+            
+            // Initialize the visualization
+            initializeVisualization();
+            
+            // Load and process data
+            loadNetworkData();
+            
+            // Setup event listeners
+            setupEventListeners();
+        });
+
+        function initializeVisualization() {
+            // Get container dimensions
+            const container = document.getElementById('topology-container');
+            width = container.clientWidth;
+            height = container.clientHeight;
+            
+            // Setup SVG
+            svg = d3.select('#network-svg')
+                .attr('width', width)
+                .attr('height', height);
+            
+            // Setup zoom behavior
+            zoom = d3.zoom()
+                .scaleExtent([0.1, 4])
+                .on('zoom', function(event) {
+                    svg.select('#main-group').attr('transform', event.transform);
+                });
+            
+            svg.call(zoom);
+            
+            // Create main group for zooming/panning
+            svg.append('g').attr('id', 'main-group');
+            
+            // Setup tooltip
+            tooltip = d3.select('#device-tooltip');
+            
+            console.log('✅ Visualization initialized');
+        }
+
+        function loadNetworkData() {
+            console.log('📡 Loading network topology data...');
+            
+            try {
+                // Get data from Django template
+                const rawData = '{{ topology_data_json|escapejs }}';
+                
+                if (!rawData || rawData === 'null' || rawData === '') {
+                    throw new Error('No topology data available');
+                }
+                
+                const data = JSON.parse(rawData);
+                console.log('📊 Parsed topology data:', data);
+                
+                // Process the data
+                processNetworkData(data);
+                
+                // Hide loading overlay
+                document.getElementById('loading-overlay').style.display = 'none';
+                
+                // Create the visualization
+                createNetworkVisualization();
+                
+            } catch (error) {
+                console.error('❌ Error loading network data:', error);
+                showError('Failed to load network topology data: ' + error.message);
+            }
+        }
+
+        function processNetworkData(data) {
+            // Process nodes (devices)
+            nodes = data.devices.map(device => ({
+                id: device.id,
+                name: device.name,
+                type: getDeviceType(device),
+                role: device.role,
+                site: device.site,
+                status: device.status,
+                manufacturer: device.manufacturer,
+                model: device.model,
+                primary_ip: device.primary_ip,
+                x: Math.random() * (width - 100) + 50,
+                y: Math.random() * (height - 100) + 50
+            }));
+            
+            // Process links (connections)
+            links = data.connections.map(conn => ({
+                source: conn.device_a,
+                target: conn.device_b,
+                type: conn.type || 'cable',
+                status: conn.status || 'connected'
+            }));
+            
+            console.log(`✅ Processed ${nodes.length} devices and ${links.length} connections`);
+        }
+
+        function getDeviceType(device) {
+            const name = device.name.toLowerCase();
+            const role = (device.role || '').toLowerCase();
+            
+            if (name.includes('ap') || name.includes('wireless') || role.includes('access')) return 'wireless';
+            if (name.includes('rtr') || name.includes('router') || role.includes('router')) return 'router';
+            if (name.includes('sw') || name.includes('switch') || role.includes('switch')) return 'switch';
+            if (name.includes('fw') || name.includes('firewall') || role.includes('firewall')) return 'firewall';
+            if (name.includes('srv') || name.includes('server') || role.includes('server')) return 'server';
+            
+            return 'default';
+        }
+
+        function createNetworkVisualization() {
+            console.log('🎨 Creating network visualization...');
+            
+            const mainGroup = svg.select('#main-group');
+            
+            // Create force simulation
+            simulation = d3.forceSimulation(nodes)
+                .force('link', d3.forceLink(links).id(d => d.id).distance(120))
+                .force('charge', d3.forceManyBody().strength(-400))
+                .force('center', d3.forceCenter(width / 2, height / 2))
+                .force('collision', d3.forceCollide().radius(35));
+            
+            // Create links
+            const link = mainGroup.selectAll('.link')
+                .data(links)
+                .enter().append('line')
+                .attr('class', 'link')
+                .attr('stroke', '#999')
+                .attr('stroke-opacity', 0.6)
+                .attr('stroke-width', 2)
+                .attr('marker-end', 'url(#arrowhead)');
+            
+            // Create device nodes
+            const node = mainGroup.selectAll('.node')
+                .data(nodes)
+                .enter().append('g')
+                .attr('class', 'node device-node')
+                .call(d3.drag()
+                    .on('start', dragstarted)
+                    .on('drag', dragged)
+                    .on('end', dragended));
+            
+            // Add device shapes
+            node.append('rect')
+                .attr('width', 50)
+                .attr('height', 35)
+                .attr('x', -25)
+                .attr('y', -17.5)
+                .attr('rx', 8)
+                .attr('fill', d => deviceConfig[d.type]?.color || deviceConfig.default.color)
+                .attr('stroke', '#fff')
+                .attr('stroke-width', 3)
+                .style('filter', 'drop-shadow(3px 3px 6px rgba(0,0,0,0.2))');
+            
+            // Add device icons (using text for now, could be replaced with actual icons)
+            node.append('text')
+                .attr('text-anchor', 'middle')
+                .attr('dy', 5)
+                .style('font-size', '14px')
+                .style('font-weight', 'bold')
+                .style('fill', '#fff')
+                .text(d => getDeviceIcon(d.type));
+            
+            // Add device labels
+            node.append('text')
+                .attr('dy', 35)
+                .attr('text-anchor', 'middle')
+                .style('font-size', '11px')
+                .style('font-weight', '600')
+                .style('fill', '#333')
+                .text(d => d.name);
+            
+            // Add hover effects
+            node
+                .on('mouseover', function(event, d) {
+                    // Highlight node
+                    d3.select(this).select('rect')
+                        .attr('stroke-width', 4)
+                        .attr('stroke', '#ffc107');
+                    
+                    // Show tooltip
+                    tooltip
+                        .style('display', 'block')
+                        .style('left', (event.pageX + 10) + 'px')
+                        .style('top', (event.pageY - 10) + 'px')
+                        .html(`
+                            <strong>${d.name}</strong><br>
+                            <small>Type: ${d.type}</small><br>
+                            <small>Role: ${d.role || 'N/A'}</small><br>
+                            <small>Site: ${d.site || 'N/A'}</small><br>
+                            <small>Status: ${d.status || 'N/A'}</small><br>
+                            <small>Model: ${d.manufacturer} ${d.model}</small><br>
+                            <small>IP: ${d.primary_ip || 'N/A'}</small>
+                        `);
+                })
+                .on('mouseout', function(event, d) {
+                    // Remove highlight
+                    d3.select(this).select('rect')
+                        .attr('stroke-width', 3)
+                        .attr('stroke', '#fff');
+                    
+                    // Hide tooltip
+                    tooltip.style('display', 'none');
+                })
+                .on('click', function(event, d) {
+                    console.log('Device clicked:', d);
+                });
+            
+            // Update positions on simulation tick
+            simulation.on('tick', () => {
+                link
+                    .attr('x1', d => d.source.x)
+                    .attr('y1', d => d.source.y)
+                    .attr('x2', d => d.target.x)
+                    .attr('y2', d => d.target.y);
+                
+                node.attr('transform', d => `translate(${d.x},${d.y})`);
+            });
+            
+            // Create legend
+            createLegend();
+            
+            console.log('✅ Network visualization created successfully');
+        }
+
+        function getDeviceIcon(type) {
+            const icons = {
+                'router': '🔀',
+                'switch': '🔗',
+                'firewall': '🛡️',
+                'server': '💻',
+                'wireless': '📡',
+                'default': '❓'
+            };
+            return icons[type] || icons.default;
+        }
+
+        function createLegend() {
+            const legendContainer = d3.select('#legend-items');
+            
+            const usedTypes = [...new Set(nodes.map(d => d.type))];
+            
+            usedTypes.forEach(type => {
+                const config = deviceConfig[type] || deviceConfig.default;
+                const item = legendContainer.append('div')
+                    .style('margin-bottom', '8px')
+                    .style('display', 'flex')
+                    .style('align-items', 'center');
+                
+                item.append('div')
+                    .style('width', '16px')
+                    .style('height', '16px')
+                    .style('background-color', config.color)
+                    .style('margin-right', '8px')
+                    .style('border-radius', '3px')
+                    .style('border', '1px solid #fff');
+                
+                item.append('span')
+                    .style('font-size', '12px')
+                    .style('font-weight', '500')
+                    .text(type.charAt(0).toUpperCase() + type.slice(1));
+            });
+        }
+
+        function setupEventListeners() {
+            // Layout selector
+            document.getElementById('layoutSelect').addEventListener('change', function() {
+                changeLayout(this.value);
+            });
+            
+            // Device filter
+            document.getElementById('deviceFilter').addEventListener('change', function() {
+                filterDevices(this.value);
+            });
+            
+            // Zoom controls
+            document.getElementById('zoomIn').addEventListener('click', () => {
+                svg.transition().duration(300).call(zoom.scaleBy, 1.5);
+            });
+            
+            document.getElementById('zoomOut').addEventListener('click', () => {
+                svg.transition().duration(300).call(zoom.scaleBy, 1 / 1.5);
+            });
+            
+            document.getElementById('resetView').addEventListener('click', () => {
+                svg.transition().duration(500).call(zoom.transform, d3.zoomIdentity);
+            });
+            
+            // Export and refresh
+            document.getElementById('exportSVG').addEventListener('click', exportSVG);
+            document.getElementById('refreshData').addEventListener('click', () => {
+                location.reload();
+            });
+        }
+
+        function changeLayout(layoutType) {
+            console.log('🔄 Changing layout to:', layoutType);
+            if (layoutType === 'circular') {
+                // Arrange nodes in a circle
+                const radius = Math.min(width, height) / 3;
+                const centerX = width / 2;
+                const centerY = height / 2;
+                
+                nodes.forEach((node, i) => {
+                    const angle = (i / nodes.length) * 2 * Math.PI;
+                    node.fx = centerX + radius * Math.cos(angle);
+                    node.fy = centerY + radius * Math.sin(angle);
+                });
+                
+                simulation.alpha(0.3).restart();
+            } else {
+                // Reset to force-directed
+                nodes.forEach(node => {
+                    node.fx = null;
+                    node.fy = null;
+                });
+                simulation.alpha(0.3).restart();
+            }
+        }
+
+        function filterDevices(deviceType) {
+            console.log('🔍 Filtering devices by type:', deviceType);
+            
+            svg.selectAll('.node')
+                .style('opacity', d => deviceType === 'all' || d.type === deviceType ? 1 : 0.2)
+                .style('pointer-events', d => deviceType === 'all' || d.type === deviceType ? 'all' : 'none');
+        }
+
+        function exportSVG() {
+            console.log('💾 Exporting SVG...');
+            const svgData = new XMLSerializer().serializeToString(document.getElementById('network-svg'));
+            const svgBlob = new Blob([svgData], {type: 'image/svg+xml;charset=utf-8'});
+            const svgUrl = URL.createObjectURL(svgBlob);
+            
+            const downloadLink = document.createElement('a');
+            downloadLink.href = svgUrl;
+            downloadLink.download = 'network-topology.svg';
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            document.body.removeChild(downloadLink);
+        }
+
+        function showError(message) {
+            document.getElementById('loading-overlay').innerHTML = `
+                <div class="text-center">
+                    <i class="mdi mdi-alert-circle text-danger" style="font-size: 48px;"></i>
+                    <h5 class="text-danger mt-2">Error</h5>
+                    <p class="text-muted">${message}</p>
+                    <button class="btn btn-primary" onclick="location.reload()">
+                        <i class="mdi mdi-refresh"></i> Retry
+                    </button>
+                </div>
+            `;
+        }
+
+        // Drag functions for D3
+        function dragstarted(event, d) {
+            if (!event.active) simulation.alphaTarget(0.3).restart();
+            d.fx = d.x;
+            d.fy = d.y;
+        }
+
+        function dragged(event, d) {
+            d.fx = event.x;
+            d.fy = event.y;
+        }
+
+        function dragended(event, d) {
+            if (!event.active) simulation.alphaTarget(0);
+            d.fx = null;
+            d.fy = null;
+        }
+
+        console.log('✅ Network Canvas Professional Dashboard - Script Loaded');
+    </script>
+</body>
+</html>

@@ -35,83 +35,130 @@ class NetworkCanvasDeleteView(generic.ObjectDeleteView):
 
 class DashboardView(TemplateView):
     """Dashboard view with network overview and visualization"""
-    template_name = 'netbox_network_canvas_plugin/dashboard_simple.html'
+    template_name = 'netbox_network_canvas_plugin/dashboard_netbox_native.html'
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         
-        # Get network statistics
-        context.update({
-            'device_count': Device.objects.count(),
-            'canvas_count': models.NetworkTopologyCanvas.objects.count(),
-            'vlan_count': VLAN.objects.count(),
-            'cable_count': Cable.objects.count(),
-        })
+        try:
+            # Get network statistics with error handling
+            from dcim.models import Site, DeviceType
+            
+            context.update({
+                'device_count': Device.objects.count(),
+                'canvas_count': models.NetworkTopologyCanvas.objects.count(),
+                'vlan_count': VLAN.objects.count(),
+                'cable_count': Cable.objects.count(),
+                'site_count': Site.objects.count(),
+                'device_type_count': DeviceType.objects.count(),
+            })
+            
+            # Get topology data for visualization
+            topology_data = self._get_topology_data()
+            context['topology_data_json'] = json.dumps(topology_data)
+            
+        except Exception as e:
+            # Provide fallback data if there are database errors
+            print(f"Error in DashboardView: {e}")
+            context.update({
+                'device_count': 0,
+                'canvas_count': 0,
+                'vlan_count': 0,
+                'cable_count': 0,
+                'site_count': 0,
+                'device_type_count': 0,
+                'topology_data_json': json.dumps({'devices': [], 'connections': [], 'stats': {'total_devices': 0, 'total_connections': 0}})
+            })
         
-        # Get topology data for visualization
-        topology_data = self._get_topology_data()
-        context['topology_data_json'] = json.dumps(topology_data)
+        return context
         
         return context
     
     def _get_topology_data(self):
         """Get network topology data for visualization"""
         try:
-            # Debug: Check if we can access Device model
-            device_count = Device.objects.count()
-            print(f"DEBUG: Found {device_count} devices in NetBox")
+            print("DEBUG: Starting _get_topology_data method")
             
-            # Get devices with optimized query
-            devices = Device.objects.select_related(
-                'device_type__manufacturer', 'site', 'role', 'rack', 'location'
-            ).prefetch_related('interfaces')[:50]  # Limit for performance
+            # Check database connectivity first
+            try:
+                device_count = Device.objects.count()
+                print(f"DEBUG: Found {device_count} devices in NetBox")
+            except Exception as db_error:
+                print(f"DEBUG: Database connectivity error: {db_error}")
+                raise
             
-            print(f"DEBUG: Retrieved {len(devices)} devices for visualization")
+            # If no devices, return empty structure
+            if device_count == 0:
+                print("DEBUG: No devices found, returning empty data")
+                return {
+                    'devices': [],
+                    'connections': [],
+                    'stats': {'total_devices': 0, 'total_connections': 0}
+                }
             
-            # Get cables for connections
-            cables = Cable.objects.all()[:100]  # Simplified query first
-            print(f"DEBUG: Retrieved {len(cables)} cables")
+            # Get devices with safe query
+            try:
+                devices = Device.objects.select_related(
+                    'device_type__manufacturer', 'site', 'role'
+                ).prefetch_related('interfaces')[:20]  # Smaller limit for safety
+                print(f"DEBUG: Retrieved {len(devices)} devices for visualization")
+            except Exception as query_error:
+                print(f"DEBUG: Device query error: {query_error}")
+                # Try simpler query
+                devices = Device.objects.all()[:10]
+                print(f"DEBUG: Retrieved {len(devices)} devices with simple query")
             
-            # Serialize data with better error handling
+            # Serialize data with comprehensive error handling
             devices_data = []
-            for device in devices:
+            for i, device in enumerate(devices):
                 try:
                     device_data = {
                         'id': device.id,
-                        'name': device.name or f'Device-{device.id}',
+                        'name': getattr(device, 'name', f'Device-{device.id}'),
                         'device_type': {
-                            'model': getattr(device.device_type, 'model', 'Unknown') if device.device_type else 'Unknown',
-                            'manufacturer': getattr(getattr(device.device_type, 'manufacturer', None), 'name', 'Unknown') if device.device_type and device.device_type.manufacturer else 'Unknown'
+                            'model': getattr(device.device_type, 'model', 'Unknown') if hasattr(device, 'device_type') and device.device_type else 'Unknown',
+                            'manufacturer': 'Unknown'
                         },
                         'site': {
-                            'name': getattr(device.site, 'name', 'Unknown') if device.site else 'Unknown'
+                            'name': getattr(device.site, 'name', f'Site-{i}') if hasattr(device, 'site') and device.site else f'Site-{i}'
                         },
-                        'role': getattr(device.role, 'name', 'Unknown') if device.role else 'Unknown',
-                        'status': str(getattr(device, 'status', 'active')),
-                        'interface_count': getattr(device, 'interfaces', []).count() if hasattr(device, 'interfaces') else 0
+                        'role': getattr(device.role, 'name', 'Unknown') if hasattr(device, 'role') and device.role else 'Unknown',
+                        'status': 'active',
+                        'interface_count': 0
                     }
+                    
+                    # Try to get manufacturer safely
+                    try:
+                        if hasattr(device, 'device_type') and device.device_type and hasattr(device.device_type, 'manufacturer') and device.device_type.manufacturer:
+                            device_data['device_type']['manufacturer'] = device.device_type.manufacturer.name
+                    except:
+                        pass
+                    
                     devices_data.append(device_data)
-                    print(f"DEBUG: Processed device {device.name}")
+                    print(f"DEBUG: Successfully processed device {device_data['name']}")
+                    
                 except Exception as device_error:
-                    print(f"DEBUG: Error processing device {device}: {device_error}")
-                    # Add a minimal device entry
+                    print(f"DEBUG: Error processing device {i}: {device_error}")
+                    # Add minimal device entry
                     devices_data.append({
-                        'id': device.id,
-                        'name': getattr(device, 'name', f'Device-{device.id}'),
+                        'id': getattr(device, 'id', i),
+                        'name': f'Device-{i}',
                         'device_type': {'model': 'Unknown', 'manufacturer': 'Unknown'},
-                        'site': {'name': 'Unknown'},
+                        'site': {'name': f'Site-{i}'},
                         'role': 'Unknown',
                         'status': 'active',
                         'interface_count': 0
                     })
             
-            # Skip cable processing since they're empty, create logical connections
+            # Create simple logical connections if we have devices
             connections_data = []
-            print(f"DEBUG: Found {len(connections_data)} real connections")
-            
-            # Create logical connections for better visualization
-            print("DEBUG: Creating logical topology connections")
-            connections_data = self._create_logical_connections(devices_data)
+            if len(devices_data) > 1:
+                try:
+                    connections_data = self._create_logical_connections(devices_data)
+                    print(f"DEBUG: Created {len(connections_data)} logical connections")
+                except Exception as conn_error:
+                    print(f"DEBUG: Error creating connections: {conn_error}")
+                    connections_data = []
             
             result = {
                 'devices': devices_data,
@@ -122,7 +169,7 @@ class DashboardView(TemplateView):
                 }
             }
             
-            print(f"DEBUG: Final result has {len(result['devices'])} devices and {len(result['connections'])} connections")
+            print(f"DEBUG: Returning data with {len(result['devices'])} devices and {len(result['connections'])} connections")
             return result
             
         except Exception as e:

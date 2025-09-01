@@ -1,4 +1,4 @@
-{% extends 'base/base.html' %}
+{% extends 'base.html' %}
 {% load static %}
 
 {% block title %}Network Canvas Dashboard{% endblock %}
@@ -121,7 +121,6 @@
                             <span class="visually-hidden">Loading...</span>
                         </div>
                         <p class="mt-2">Loading network topology...</p>
-                        <p class="mt-2 text-muted"><small>Device Count: {{ device_count }}</small></p>
                     </div>
                     
                     <div id="error-message" style="display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center;">
@@ -145,23 +144,14 @@
 <script src="https://d3js.org/d3.v7.min.js"></script>
 <script>
 console.log('✅ Network Canvas Dashboard JavaScript Loading...');
-console.log('📊 Device count from context: {{ device_count }}');
-console.log('📊 Cable count from context: {{ cable_count }}');
 
 document.addEventListener('DOMContentLoaded', function() {
     console.log('✅ DOM Content Loaded');
     
-    // Update loading message to show we're processing
-    const loadingDiv = document.getElementById('loading');
-    if (loadingDiv) {
-        loadingDiv.innerHTML = '<div class="spinner-border text-primary" role="status"></div><p class="mt-2">Processing data...</p>';
-    }
-    
     try {
         // Get topology data from Django template
         const rawData = '{{ topology_data_json|escapejs }}';
-        console.log('📊 Raw topology data length:', rawData ? rawData.length : 0);
-        console.log('📊 First 200 chars of data:', rawData ? rawData.substring(0, 200) : 'NO DATA');
+        console.log('📊 Raw topology data:', rawData ? 'Available' : 'Missing');
         
         if (!rawData || rawData.length < 10) {
             throw new Error('No topology data available from NetBox. Please ensure you have devices configured.');
@@ -174,24 +164,7 @@ document.addEventListener('DOMContentLoaded', function() {
             throw new Error('No devices found in NetBox. Please add some devices first.');
         }
         
-        // Update loading message to show device count
-        if (loadingDiv) {
-            loadingDiv.innerHTML = `<div class="spinner-border text-primary" role="status"></div><p class="mt-2">Rendering ${topologyData.devices.length} devices...</p>`;
-        }
-        
-        // Wait a bit longer for elements to be ready
-        setTimeout(() => {
-            console.log('🕐 Timeout fired, checking DOM state...');
-            const containerCheck = document.getElementById('topology-container');
-            console.log('🔍 Container exists now:', containerCheck ? 'YES' : 'NO');
-            
-            if (containerCheck) {
-                initializeVisualization(topologyData);
-            } else {
-                console.error('❌ Container still not found after timeout');
-                showError('UI elements not found. Please try refreshing the page.');
-            }
-        }, 1000);
+        initializeVisualization(topologyData);
         
     } catch (error) {
         console.error('❌ Error initializing dashboard:', error);
@@ -202,48 +175,13 @@ document.addEventListener('DOMContentLoaded', function() {
 function initializeVisualization(data) {
     console.log('🎯 Initializing visualization with', data.devices.length, 'devices');
     
-    // Check if elements exist
-    const container = document.getElementById('topology-container');
-    const loadingDiv = document.getElementById('loading');
     const svg = d3.select('#network-svg');
-    
-    console.log('🔍 Element check:');
-    console.log('  - container:', container ? 'found' : 'NOT FOUND');
-    console.log('  - loading div:', loadingDiv ? 'found' : 'NOT FOUND');
-    console.log('  - svg:', svg.empty() ? 'NOT FOUND' : 'found');
-    
-    if (!container) {
-        console.error('❌ topology-container element not found!');
-        const errorDiv = document.getElementById('error-message');
-        if (errorDiv) {
-            errorDiv.style.display = 'block';
-            document.getElementById('error-details').textContent = 'UI elements not found. Page may not have loaded correctly.';
-        }
-        return;
-    }
-    
+    const container = document.getElementById('topology-container');
     const width = container.clientWidth;
     const height = container.clientHeight;
     
-    console.log('📏 Container dimensions:', width, 'x', height);
-    
     // Hide loading indicator
-    if (loadingDiv) {
-        loadingDiv.style.display = 'none';
-    }
-    
-    if (!data.devices || data.devices.length === 0) {
-        // Show a message for no devices
-        const g = svg.append('g');
-        g.append('text')
-            .attr('x', width / 2)
-            .attr('y', height / 2)
-            .attr('text-anchor', 'middle')
-            .attr('font-size', '18px')
-            .attr('fill', '#666')
-            .text('No devices found in NetBox. Please add some devices to see the topology.');
-        return;
-    }
+    document.getElementById('loading').style.display = 'none';
     
     // Simple device rendering for now
     const g = svg.append('g');
@@ -251,7 +189,7 @@ function initializeVisualization(data) {
     // Create simple layout
     const devices = data.devices;
     devices.forEach((device, i) => {
-        const x = (width / Math.max(devices.length, 1)) * i + 50;
+        const x = (width / devices.length) * i + 50;
         const y = height / 2;
         
         // Draw device as circle
