@@ -35,7 +35,7 @@ class NetworkCanvasDeleteView(generic.ObjectDeleteView):
 
 class DashboardView(TemplateView):
     """Dashboard view with network overview and visualization"""
-    template_name = 'netbox_network_canvas_plugin/dashboard_netbox_native.html'
+    template_name = 'netbox_network_canvas_plugin/dashboard_improved.html'
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

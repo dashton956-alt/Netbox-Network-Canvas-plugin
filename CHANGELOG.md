@@ -1,5 +1,24 @@
 # Changelog
 
+## 0.1.3 (2025-09-01)
+
+### Improvements
+* Created improved NetBox dashboard template with enhanced styling and error handling
+* Fixed blank blue page display issues with custom CSS overrides
+* Added comprehensive D3.js visualization with async loading and fallback handling
+* Enhanced template inheritance using NetBox base templates for better integration
+* Improved network topology visualization with professional styling
+* Added responsive design with device statistics cards and interactive controls
+* Implemented robust error handling for missing dependencies and network issues
+* Updated documentation and development status indicators
+
+### Bug Fixes
+* Resolved template display issues causing blank pages
+* Fixed static file dependency conflicts with CDN fallbacks
+* Improved server startup and port conflict resolution
+* Enhanced plugin template resolution and inheritance
+* Fixed CSS styling conflicts with NetBox base themes
+
 ## 0.1.2 (2025-09-01)
 
 ### Improvements

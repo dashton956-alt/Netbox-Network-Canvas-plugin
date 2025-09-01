@@ -1,6 +1,10 @@
 # NetBox Network Canvas Plugin
 
+🚧 **Development Status: Alpha** 🚧
+
 Interactive network topology visualization for NetBox DCIM/IPAM data with comprehensive Layer 2/Layer 3 mapping, VLAN visualization, and real-time network discovery.
+
+**⚠️ This plugin is currently under active development and may contain bugs or incomplete features. Use in production environments is not recommended at this time.**
 
 ![Network Topology Visualization](https://via.placeholder.com/800x400/007bff/ffffff?text=Interactive+Network+Topology)
 
@@ -57,10 +61,21 @@ Interactive network topology visualization for NetBox DCIM/IPAM data with compre
 
 | NetBox Version | Plugin Version | Status |
 |----------------|----------------|--------|
-|     3.5.x      |      0.1.0     |   ✅   |
-|     3.6.x      |      0.1.0     |   ✅   |
-|     3.7.x      |      0.1.0     |   ✅   |
-|     4.0.x      |      0.1.0     |   ✅   |
+|     3.5.x      |      0.1.x     |   ⚠️   |
+|     3.6.x      |      0.1.x     |   ⚠️   |
+|     3.7.x      |      0.1.x     |   ⚠️   |
+|     4.0.x      |      0.1.x     |   ⚠️   |
+|     4.1.x      |      0.1.x     |   ⚠️   |
+|     4.2.x      |      0.1.x     |   ⚠️   |
+|     4.3.x      |      0.1.x     |   🧪   |
+
+**Legend:**
+- ✅ Fully Supported
+- 🧪 Experimental/Testing
+- ⚠️ Limited Testing
+- ❌ Not Supported
+
+**Note:** This plugin is currently in alpha development. Compatibility testing is ongoing.
 
 ## Installation
 
@@ -76,7 +91,13 @@ See [the general instructions for using netbox-docker with plugins](https://gith
 1. Add to your `plugin_requirements.txt`:
 
 ```bash
-git+https://github.com/dashton956-alt/netbox-network-canvas-plugin
+netbox-network-canvas-plugin==0.1.3
+```
+
+**Or install from GitHub for latest development version:**
+
+```bash
+git+https://github.com/dashton956-alt/netbox-network-canvas-plugin@feature/visualization
 ```
 
 2. Enable the plugin in `/configuration/plugins.py`:
@@ -88,13 +109,15 @@ PLUGINS = [
 
 PLUGINS_CONFIG = {
     "netbox_network_canvas_plugin": {
-        # Optional configuration
+        # Optional configuration (under development)
         'max_devices_per_canvas': 500,
-        'enable_real_time_updates': False,
-        'cache_topology_data': True,
+        'enable_real_time_updates': False,  # Future feature
+        'cache_topology_data': True,        # Future feature
     },
 }
 ```
+
+**⚠️ Development Note:** Configuration options are being developed and may change in future versions.
 
 ### For Standard NetBox Installation
 
@@ -106,12 +129,17 @@ pip install git+https://github.com/Dashton956-alt/netbox-network-canvas-plugin
 ### For Standard NetBox Installation
 
 ```bash
-# Install from Git repository
-pip install git+https://github.com/dashton956-alt/netbox-network-canvas-plugin
+# Install from PyPI (recommended for stable releases)
+pip install netbox-network-canvas-plugin==0.1.3
+
+# Or install from Git repository (development version)
+pip install git+https://github.com/dashton956-alt/netbox-network-canvas-plugin@feature/visualization
 
 # Or install from local development copy
 pip install -e /path/to/netbox-network-canvas-plugin
 ```
+
+**⚠️ Development Installation Note:** For development purposes, use the editable install (`-e`) option.
 
 Enable in NetBox configuration:
 

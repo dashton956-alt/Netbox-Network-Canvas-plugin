@@ -1,7 +1,11 @@
 # Contributing
 
+🚧 **Development Status: Alpha** 🚧
+
 Contributions are welcome, and they are greatly appreciated! Every little bit
 helps, and credit will always be given.
+
+**⚠️ Please note:** This project is currently in alpha development. Contributing guidelines and processes may evolve as the project matures.
 
 We love your input! We want to make contributing to this project as easy and transparent as possible, whether it's:
 
@@ -23,7 +27,9 @@ We love your input! We want to make contributing to this project as easy and tra
 
 ### Report Bugs
 
-Report bugs at https://github.com/dashton956-alt/netbox-network-canvas-plugin/issues.
+Report bugs at https://github.com/dashton956-alt/Netbox-Network-Canvas-plugin/issues.
+
+**⚠️ Development Note:** As this is an alpha project, please include detailed environment information and steps to reproduce issues.
 
 If you are reporting a bug, please include:
 

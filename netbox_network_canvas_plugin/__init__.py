@@ -1,8 +1,8 @@
 """Top-level package for NetBox Network Canvas Plugin."""
 
 __author__ = """Daniel Ashton"""
-__email__ = ""
-__version__ = "0.1.2"
+__email__ = "dashton956@gmail.com"
+__version__ = "0.1.3"
 
 
 from netbox.plugins import PluginConfig
