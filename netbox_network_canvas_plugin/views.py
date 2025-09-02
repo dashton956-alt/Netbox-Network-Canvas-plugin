@@ -56,10 +56,19 @@ class DashboardView(TemplateView):
     def _get_topology_data(self):
         """Get network topology data for visualization"""
         try:
-            # Get devices with related data, grouped by site
+            # Get all active devices with related data, grouped by site
             devices = Device.objects.select_related(
                 'device_type', 'device_type__manufacturer', 'site', 'role'
-            ).prefetch_related('interfaces').all()[:50]  # Limit for performance
+            ).prefetch_related('interfaces').filter(
+                status='active'  # Only active devices
+            ).all()[:200]  # Increased limit for better coverage
+            
+            # Get connections/cables between devices
+            device_ids = [d.id for d in devices]
+            cables = Cable.objects.filter(
+                a_terminations__device_id__in=device_ids,
+                b_terminations__device_id__in=device_ids
+            ).select_related().distinct()[:100]  # Limit cables for performance
             
             # Group devices by site
             sites_data = {}
@@ -68,6 +77,7 @@ class DashboardView(TemplateView):
                 if site_name not in sites_data:
                     sites_data[site_name] = {
                         'name': site_name,
+                        'id': device.site.id if device.site else None,
                         'devices': []
                     }
                 
@@ -82,15 +92,52 @@ class DashboardView(TemplateView):
                         'manufacturer': device.device_type.manufacturer.name if device.device_type and device.device_type.manufacturer else 'Unknown'
                     },
                     'site': {
+                        'id': device.site.id if device.site else None,
                         'name': device.site.name if device.site else 'Unknown'
                     },
                     'role': device.role.name if device.role else 'Unknown',
                     'status': str(device.status) if device.status else 'unknown',
                     'interface_count': device.interfaces.count(),
                     'type': device_type,  # Enhanced device type
-                    'icon': self._get_device_icon(device_type)
+                    'icon': self._get_device_icon(device_type),
+                    'primary_ip': str(device.primary_ip4.address) if device.primary_ip4 else None
                 }
                 sites_data[site_name]['devices'].append(device_data)
+            
+            # Process connections
+            connections = []
+            for cable in cables:
+                try:
+                    # Get termination devices
+                    a_device_id = None
+                    b_device_id = None
+                    
+                    # Handle different termination types
+                    if hasattr(cable, 'a_terminations') and cable.a_terminations:
+                        for termination in cable.a_terminations.all():
+                            if hasattr(termination, 'device'):
+                                a_device_id = termination.device.id
+                                break
+                    
+                    if hasattr(cable, 'b_terminations') and cable.b_terminations:
+                        for termination in cable.b_terminations.all():
+                            if hasattr(termination, 'device'):
+                                b_device_id = termination.device.id
+                                break
+                    
+                    if a_device_id and b_device_id and a_device_id in device_ids and b_device_id in device_ids:
+                        connections.append({
+                            'id': cable.id,
+                            'source': a_device_id,
+                            'target': b_device_id,
+                            'type': str(cable.type) if cable.type else 'ethernet',
+                            'status': str(cable.status) if cable.status else 'connected',
+                            'length': float(cable.length) if cable.length else None
+                        })
+                except Exception as e:
+                    # Skip problematic cables
+                    print(f"Skipping cable {cable.id}: {e}")
+                    continue
             
             # Convert to list format
             sites_list = list(sites_data.values())
@@ -101,11 +148,11 @@ class DashboardView(TemplateView):
             return {
                 'devices': all_devices,
                 'sites': sites_list,
-                'connections': [],  # Empty for now
+                'connections': connections,
                 'stats': {
                     'total_devices': len(all_devices),
                     'total_sites': len(sites_list),
-                    'total_connections': 0
+                    'total_connections': len(connections)
                 }
             }
         except Exception as e:
@@ -164,6 +211,178 @@ class DashboardView(TemplateView):
             'unknown': '❓'
         }
         return icons.get(device_type, icons['unknown'])
+
+
+class EnhancedDashboardView(TemplateView):
+    """Enhanced dashboard view with draggable/resizable sites and better connection detection"""
+    template_name = 'netbox_network_canvas_plugin/dashboard_enhanced.html'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
+        # Get network statistics
+        context.update({
+            'device_count': Device.objects.count(),
+            'canvas_count': models.NetworkTopologyCanvas.objects.count(),
+            'vlan_count': VLAN.objects.count(),
+            'cable_count': Cable.objects.count(),
+        })
+        
+        # Get enhanced topology data for visualization
+        topology_data = self._get_enhanced_topology_data()
+        context['topology_data_json'] = json.dumps(topology_data)
+        
+        return context
+    
+    def _get_enhanced_topology_data(self):
+        """Get enhanced network topology data with better connection detection"""
+        try:
+            # Get all active devices with related data
+            devices = Device.objects.select_related(
+                'device_type', 'device_type__manufacturer', 'site', 'role', 'primary_ip4', 'primary_ip6'
+            ).prefetch_related('interfaces').filter(
+                status='active'
+            ).all()[:300]  # Increased limit
+            
+            device_ids = [d.id for d in devices]
+            
+            # Enhanced cable detection with better termination handling
+            cables = []
+            try:
+                # Get cables connected to our devices
+                raw_cables = Cable.objects.filter(
+                    a_terminations__device_id__in=device_ids
+                ).distinct()[:200] | Cable.objects.filter(
+                    b_terminations__device_id__in=device_ids
+                ).distinct()[:200]
+                
+                cables = list(raw_cables.distinct())
+                print(f"Found {len(cables)} cables for {len(devices)} devices")
+                
+            except Exception as e:
+                print(f"Cable query error: {e}")
+                cables = []
+            
+            # Group devices by site with enhanced organization
+            sites_data = {}
+            for device in devices:
+                site_name = device.site.name if device.site else 'Unknown Site'
+                site_id = device.site.id if device.site else None
+                
+                if site_name not in sites_data:
+                    sites_data[site_name] = {
+                        'name': site_name,
+                        'id': site_id,
+                        'devices': []
+                    }
+                
+                # Enhanced device type detection
+                device_type = self._get_device_type(device)
+                
+                device_data = {
+                    'id': device.id,
+                    'name': device.name,
+                    'device_type': {
+                        'model': device.device_type.model if device.device_type else 'Unknown',
+                        'manufacturer': device.device_type.manufacturer.name if device.device_type and device.device_type.manufacturer else 'Unknown'
+                    },
+                    'site': {
+                        'id': site_id,
+                        'name': site_name
+                    },
+                    'role': device.role.name if device.role else 'Unknown',
+                    'status': str(device.status) if device.status else 'unknown',
+                    'interface_count': device.interfaces.count(),
+                    'type': device_type,
+                    'icon': self._get_device_icon(device_type),
+                    'primary_ip': str(device.primary_ip4.address) if device.primary_ip4 else (
+                        str(device.primary_ip6.address) if device.primary_ip6 else None
+                    )
+                }
+                sites_data[site_name]['devices'].append(device_data)
+            
+            # Enhanced connection processing
+            connections = []
+            for cable in cables:
+                try:
+                    connection = self._process_cable_connection(cable, device_ids)
+                    if connection:
+                        connections.append(connection)
+                except Exception as e:
+                    print(f"Error processing cable {cable.id}: {e}")
+                    continue
+            
+            # Convert to list format
+            sites_list = list(sites_data.values())
+            all_devices = []
+            for site in sites_list:
+                all_devices.extend(site['devices'])
+            
+            print(f"Enhanced topology: {len(all_devices)} devices, {len(connections)} connections, {len(sites_list)} sites")
+            
+            return {
+                'devices': all_devices,
+                'sites': sites_list,
+                'connections': connections,
+                'stats': {
+                    'total_devices': len(all_devices),
+                    'total_sites': len(sites_list),
+                    'total_connections': len(connections)
+                }
+            }
+            
+        except Exception as e:
+            print(f"Enhanced topology data error: {e}")
+            return {
+                'devices': [],
+                'sites': [],
+                'connections': [],
+                'stats': {'total_devices': 0, 'total_sites': 0, 'total_connections': 0},
+                'error': str(e)
+            }
+    
+    def _process_cable_connection(self, cable, device_ids):
+        """Process a cable to extract device-to-device connections"""
+        try:
+            a_device_id = None
+            b_device_id = None
+            a_interface = None
+            b_interface = None
+            
+            # Handle A terminations
+            if hasattr(cable, 'a_terminations'):
+                for termination in cable.a_terminations.all():
+                    if hasattr(termination, 'device') and termination.device.id in device_ids:
+                        a_device_id = termination.device.id
+                        a_interface = termination.name if hasattr(termination, 'name') else str(termination)
+                        break
+            
+            # Handle B terminations  
+            if hasattr(cable, 'b_terminations'):
+                for termination in cable.b_terminations.all():
+                    if hasattr(termination, 'device') and termination.device.id in device_ids:
+                        b_device_id = termination.device.id
+                        b_interface = termination.name if hasattr(termination, 'name') else str(termination)
+                        break
+            
+            # Return connection if both ends found
+            if a_device_id and b_device_id and a_device_id != b_device_id:
+                return {
+                    'id': cable.id,
+                    'source': a_device_id,
+                    'target': b_device_id,
+                    'type': str(cable.type) if cable.type else 'ethernet',
+                    'status': str(cable.status) if cable.status else 'connected',
+                    'length': float(cable.length) if cable.length else None,
+                    'a_interface': a_interface,
+                    'b_interface': b_interface
+                }
+            
+            return None
+            
+        except Exception as e:
+            print(f"Cable processing error for cable {cable.id}: {e}")
+            return None
 
 
 class TopologyDataView(View):
