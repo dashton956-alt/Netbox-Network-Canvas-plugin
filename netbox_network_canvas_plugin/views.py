@@ -56,15 +56,25 @@ class DashboardView(TemplateView):
     def _get_topology_data(self):
         """Get network topology data for visualization"""
         try:
-            # Get devices with related data
+            # Get devices with related data, grouped by site
             devices = Device.objects.select_related(
                 'device_type', 'device_type__manufacturer', 'site', 'role'
             ).prefetch_related('interfaces').all()[:50]  # Limit for performance
             
-            # Serialize data
-            devices_data = []
+            # Group devices by site
+            sites_data = {}
             for device in devices:
-                devices_data.append({
+                site_name = device.site.name if device.site else 'Unknown Site'
+                if site_name not in sites_data:
+                    sites_data[site_name] = {
+                        'name': site_name,
+                        'devices': []
+                    }
+                
+                # Determine device type and icon
+                device_type = self._get_device_type(device)
+                
+                device_data = {
                     'id': device.id,
                     'name': device.name,
                     'device_type': {
@@ -76,28 +86,84 @@ class DashboardView(TemplateView):
                     },
                     'role': device.role.name if device.role else 'Unknown',
                     'status': str(device.status) if device.status else 'unknown',
-                    'interface_count': device.interfaces.count()
-                })
+                    'interface_count': device.interfaces.count(),
+                    'type': device_type,  # Enhanced device type
+                    'icon': self._get_device_icon(device_type)
+                }
+                sites_data[site_name]['devices'].append(device_data)
             
-            # For now, return empty connections until we fix cable logic
-            connections_data = []
+            # Convert to list format
+            sites_list = list(sites_data.values())
+            all_devices = []
+            for site in sites_list:
+                all_devices.extend(site['devices'])
             
             return {
-                'devices': devices_data,
-                'connections': connections_data,
+                'devices': all_devices,
+                'sites': sites_list,
+                'connections': [],  # Empty for now
                 'stats': {
-                    'total_devices': len(devices_data),
-                    'total_connections': len(connections_data)
+                    'total_devices': len(all_devices),
+                    'total_sites': len(sites_list),
+                    'total_connections': 0
                 }
             }
         except Exception as e:
             # Return minimal data on error
             return {
                 'devices': [],
+                'sites': [],
                 'connections': [],
-                'stats': {'total_devices': 0, 'total_connections': 0},
+                'stats': {'total_devices': 0, 'total_sites': 0, 'total_connections': 0},
                 'error': str(e)
             }
+
+    def _get_device_type(self, device):
+        """Determine device type from device model and role"""
+        if not device.device_type:
+            return 'unknown'
+        
+        model = device.device_type.model.lower()
+        role = device.role.name.lower() if device.role else ''
+        
+        # Check role first for more accurate typing
+        if 'switch' in role:
+            return 'switch'
+        elif 'router' in role:
+            return 'router'
+        elif 'firewall' in role or 'security' in role:
+            return 'firewall'
+        elif 'access point' in role or 'ap' in role or 'wireless' in role:
+            return 'ap'
+        elif 'server' in role or 'vm' in role or 'virtual' in role:
+            return 'server'
+        
+        # Fallback to model name detection
+        if any(x in model for x in ['switch', 'catalyst', 'nexus', 'ex-', 'qfx']):
+            return 'switch'
+        elif any(x in model for x in ['router', 'isr', 'asr', 'mx-', 'srx']):
+            return 'router'
+        elif any(x in model for x in ['firewall', 'pa-', 'asa', 'fortigate']):
+            return 'firewall'
+        elif any(x in model for x in ['ap-', 'access point', 'wireless', 'wifi']):
+            return 'ap'
+        elif any(x in model for x in ['server', 'poweredge', 'proliant', 'vm']):
+            return 'server'
+        
+        return 'unknown'
+
+    def _get_device_icon(self, device_type):
+        """Get icon for device type"""
+        icons = {
+            'switch': '⚡',
+            'router': '🔀', 
+            'firewall': '🛡️',
+            'ap': '📶',
+            'server': '💻',
+            'vm': '🖥️',
+            'unknown': '❓'
+        }
+        return icons.get(device_type, icons['unknown'])
 
 
 class TopologyDataView(View):

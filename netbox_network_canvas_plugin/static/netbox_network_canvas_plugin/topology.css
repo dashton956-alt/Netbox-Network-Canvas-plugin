@@ -37,6 +37,8 @@
 .device-router { fill: #dc3545; }
 .device-server { fill: #28a745; }
 .device-firewall { fill: #fd7e14; }
+.device-ap { fill: #6610f2; }
+.device-vm { fill: #20c997; }
 .device-unknown { fill: #6c757d; }
 
 /* Connection/Link Styles */
@@ -277,4 +279,28 @@
         border-color: #495057;
         color: #f8f9fa;
     }
+}
+
+/* Site Organization Styles */
+.site-boundary {
+    opacity: 0.6;
+    transition: opacity 0.3s ease;
+}
+
+.site-boundary:hover {
+    opacity: 1;
+}
+
+.site-label {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 600;
+    text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.8);
+    pointer-events: none;
+}
+
+/* Device Icon Styles */
+.device-icon {
+    font-size: 16px;
+    pointer-events: none;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
 }

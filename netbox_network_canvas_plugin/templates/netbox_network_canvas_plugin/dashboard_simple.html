@@ -89,19 +89,23 @@
                         <h6>Device Types</h6>
                         <div class="legend-item">
                             <div class="legend-color device-switch"></div>
-                            <span>Switch</span>
+                            <span>⚡ Switch</span>
                         </div>
                         <div class="legend-item">
                             <div class="legend-color device-router"></div>
-                            <span>Router</span>
-                        </div>
-                        <div class="legend-item">
-                            <div class="legend-color device-server"></div>
-                            <span>Server</span>
+                            <span>🔀 Router</span>
                         </div>
                         <div class="legend-item">
                             <div class="legend-color device-firewall"></div>
-                            <span>Firewall</span>
+                            <span>🛡️ Firewall</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color device-ap"></div>
+                            <span>📶 Access Point</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color device-server"></div>
+                            <span>💻 Server/VM</span>
                         </div>
                     </div>
                 </div>
@@ -165,63 +169,123 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     function createVisualization(data) {
-        // Convert devices to D3 nodes with enhanced properties
-        const nodes = data.devices.map(device => ({
-            id: device.id,
-            name: device.name,
-            type: getDeviceType(device.device_type.model),
-            site: device.site.name,
-            role: device.role,
-            status: device.status,
-            deviceType: device.device_type.model,
-            manufacturer: device.device_type.manufacturer,
-            interfaceCount: device.interface_count || 0,
-            x: Math.random() * (width - 100) + 50,
-            y: Math.random() * (height - 100) + 50
-        }));
+        console.log('Creating site-grouped visualization...', data);
         
-        // Create links from connections data or simple chain
+        // Group devices by site for layout
+        const siteGroups = {};
+        data.devices.forEach(device => {
+            const siteName = device.site.name;
+            if (!siteGroups[siteName]) {
+                siteGroups[siteName] = [];
+            }
+            siteGroups[siteName].push(device);
+        });
+        
+        console.log('Site groups:', Object.keys(siteGroups));
+        
+        // Calculate site positions in a grid
+        const siteNames = Object.keys(siteGroups);
+        const sitesPerRow = Math.ceil(Math.sqrt(siteNames.length));
+        const siteWidth = (width - 100) / sitesPerRow;
+        const siteHeight = (height - 100) / Math.ceil(siteNames.length / sitesPerRow);
+        
+        // Convert devices to D3 nodes with site-based positioning
+        const nodes = [];
+        siteNames.forEach((siteName, siteIndex) => {
+            const siteX = (siteIndex % sitesPerRow) * siteWidth + siteWidth / 2 + 50;
+            const siteY = Math.floor(siteIndex / sitesPerRow) * siteHeight + siteHeight / 2 + 50;
+            
+            siteGroups[siteName].forEach((device, deviceIndex) => {
+                // Position devices in a circle within each site area
+                const deviceCount = siteGroups[siteName].length;
+                const angle = (deviceIndex / deviceCount) * 2 * Math.PI;
+                const radius = Math.min(siteWidth, siteHeight) / 4;
+                
+                const deviceX = siteX + Math.cos(angle) * radius;
+                const deviceY = siteY + Math.sin(angle) * radius;
+                
+                nodes.push({
+                    id: device.id,
+                    name: device.name,
+                    type: device.type,
+                    site: device.site.name,
+                    siteName: siteName,
+                    siteX: siteX,
+                    siteY: siteY,
+                    role: device.role,
+                    status: device.status,
+                    deviceType: device.device_type.model,
+                    manufacturer: device.device_type.manufacturer,
+                    interfaceCount: device.interface_count || 0,
+                    icon: device.icon,
+                    x: deviceX,
+                    y: deviceY,
+                    fx: deviceX, // Fix initial position
+                    fy: deviceY
+                });
+            });
+        });
+        
+        // Create simple inter-site links for demonstration
         let links = [];
-        if (data.connections && data.connections.length > 0) {
-            // Use real connection data
-            links = data.connections
-                .filter(conn => conn.a_device && conn.b_device)
-                .map(conn => {
-                    const source = nodes.find(n => n.id === conn.a_device);
-                    const target = nodes.find(n => n.id === conn.b_device);
-                    if (source && target) {
-                        return {
-                            source: source,
-                            target: target,
-                            type: conn.type,
-                            status: conn.status,
-                            length: conn.length
-                        };
-                    }
-                    return null;
-                }).filter(link => link !== null);
-        } else {
-            // Fallback: create a simple chain topology
-            for (let i = 0; i < nodes.length - 1; i++) {
+        for (let i = 0; i < siteNames.length - 1; i++) {
+            const site1Devices = nodes.filter(n => n.siteName === siteNames[i]);
+            const site2Devices = nodes.filter(n => n.siteName === siteNames[i + 1]);
+            
+            if (site1Devices.length > 0 && site2Devices.length > 0) {
+                // Connect first router/switch from each site
+                const site1Router = site1Devices.find(d => d.type === 'router') || site1Devices[0];
+                const site2Router = site2Devices.find(d => d.type === 'router') || site2Devices[0];
+                
                 links.push({
-                    source: nodes[i],
-                    target: nodes[i + 1],
-                    type: 'ethernet',
+                    source: site1Router,
+                    target: site2Router,
+                    type: 'wan',
                     status: 'connected'
                 });
             }
         }
         
-        console.log(`Created visualization with ${nodes.length} nodes and ${links.length} links`);
+        console.log(`Created visualization with ${nodes.length} nodes and ${links.length} links across ${siteNames.length} sites`);
         
-        // Create force simulation with improved forces
+        // Draw site boundaries
+        const siteGroup = g.append('g').attr('class', 'sites');
+        siteNames.forEach((siteName, siteIndex) => {
+            const siteX = (siteIndex % sitesPerRow) * siteWidth + 50;
+            const siteY = Math.floor(siteIndex / sitesPerRow) * siteHeight + 50;
+            
+            // Site boundary rectangle
+            siteGroup.append('rect')
+                .attr('class', 'site-boundary')
+                .attr('x', siteX)
+                .attr('y', siteY)
+                .attr('width', siteWidth - 20)
+                .attr('height', siteHeight - 20)
+                .attr('fill', 'none')
+                .attr('stroke', '#dee2e6')
+                .attr('stroke-width', 2)
+                .attr('stroke-dasharray', '5,5')
+                .attr('rx', 10);
+            
+            // Site label
+            siteGroup.append('text')
+                .attr('class', 'site-label')
+                .attr('x', siteX + (siteWidth - 20) / 2)
+                .attr('y', siteY + 20)
+                .attr('text-anchor', 'middle')
+                .attr('font-size', '14px')
+                .attr('font-weight', 'bold')
+                .attr('fill', '#495057')
+                .text(siteName);
+        });
+        
+        // Create force simulation with reduced forces for organized layout
         const simulation = d3.forceSimulation(nodes)
-            .force('link', d3.forceLink(links).id(d => d.id).distance(100).strength(0.5))
-            .force('charge', d3.forceManyBody().strength(-300).distanceMax(400))
-            .force('center', d3.forceCenter(width / 2, height / 2))
-            .force('collision', d3.forceCollide().radius(25))
-            .force('x', d3.forceX(width / 2).strength(0.1))
-            .force('y', d3.forceY(height / 2).strength(0.1));
+            .force('link', d3.forceLink(links).id(d => d.id).distance(150).strength(0.3))
+            .force('charge', d3.forceManyBody().strength(-100).distanceMax(200))
+            .force('collision', d3.forceCollide().radius(30))
+            .alpha(0.3) // Lower alpha for gentler movement
+            .alphaDecay(0.02);
         
         // Draw connections
         const linkGroup = g.append('g').attr('class', 'links');
@@ -231,7 +295,7 @@ document.addEventListener('DOMContentLoaded', function() {
             .enter()
             .append('line')
             .attr('class', 'connection-line')
-            .attr('stroke', '#495057')
+            .attr('stroke', d => d.type === 'wan' ? '#dc3545' : '#495057')
             .attr('stroke-width', d => getConnectionWidth(d))
             .style('opacity', 0.7);
         
@@ -245,21 +309,21 @@ document.addEventListener('DOMContentLoaded', function() {
             .attr('class', 'device-node')
             .style('cursor', 'pointer');
         
-        // Add node circles
+        // Add node circles with enhanced styling
         nodeElements.append('circle')
             .attr('r', d => getNodeRadius(d))
             .attr('class', d => `device-${d.type}`)
             .attr('stroke', '#fff')
             .attr('stroke-width', 2);
         
-        // Add device icons (text-based for now)
+        // Add device icons (using the icons from the data)
         nodeElements.append('text')
             .attr('class', 'device-icon')
             .attr('text-anchor', 'middle')
             .attr('dy', '0.35em')
-            .attr('font-size', '14px')
+            .attr('font-size', '16px')
             .attr('fill', 'white')
-            .text(d => getDeviceIcon(d.type));
+            .text(d => d.icon);
         
         // Add labels
         const labelGroup = g.append('g').attr('class', 'labels');
@@ -275,16 +339,27 @@ document.addEventListener('DOMContentLoaded', function() {
             .attr('width', d => Math.max(d.name.length * 7, 50))
             .attr('height', 16)
             .attr('x', d => -Math.max(d.name.length * 7, 50) / 2)
-            .attr('y', -30);
+            .attr('y', -35);
         
         // Label text
         labelElements.append('text')
             .attr('class', 'device-label')
             .text(d => d.name.length > 12 ? d.name.substring(0, 12) + '...' : d.name)
-            .attr('y', -22);
+            .attr('y', -27);
         
-        // Update positions on simulation tick
+        // Update positions on simulation tick (allow some movement within site bounds)
         simulation.on('tick', () => {
+            // Keep nodes within their site boundaries
+            nodes.forEach(d => {
+                const margin = 40;
+                const siteIndex = Object.keys(siteGroups).indexOf(d.siteName);
+                const siteX = (siteIndex % sitesPerRow) * siteWidth + 50;
+                const siteY = Math.floor(siteIndex / sitesPerRow) * siteHeight + 50;
+                
+                d.x = Math.max(siteX + margin, Math.min(siteX + siteWidth - 40 - margin, d.x));
+                d.y = Math.max(siteY + margin + 30, Math.min(siteY + siteHeight - 40 - margin, d.y));
+            });
+            
             linkElements
                 .attr('x1', d => d.source.x)
                 .attr('y1', d => d.source.y)
@@ -426,6 +501,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (modelLower.includes('router') || modelLower.includes('isr') || modelLower.includes('mx') || modelLower.includes('asr')) return 'router';
         if (modelLower.includes('server') || modelLower.includes('poweredge') || modelLower.includes('proliant')) return 'server';
         if (modelLower.includes('firewall') || modelLower.includes('pa-') || modelLower.includes('asa')) return 'firewall';
+        if (modelLower.includes('ap-') || modelLower.includes('access point') || modelLower.includes('wireless')) return 'ap';
         return 'unknown';
     }
     
@@ -435,6 +511,8 @@ document.addEventListener('DOMContentLoaded', function() {
             'router': '🔀',
             'server': '💻',
             'firewall': '🛡️',
+            'ap': '📶',
+            'vm': '🖥️',
             'unknown': '❓'
         };
         return icons[type] || icons.unknown;
