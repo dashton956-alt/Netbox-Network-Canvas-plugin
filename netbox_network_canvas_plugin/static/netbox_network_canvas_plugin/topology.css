@@ -75,19 +75,19 @@
 /* Labels and Text */
 .device-label {
     font-family: 'Roboto', sans-serif;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 500;
-    fill: #333;
+    fill: #333333;
     text-anchor: middle;
     pointer-events: none;
-    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
 }
 
 .device-label-background {
-    fill: rgba(255, 255, 255, 0.9);
-    stroke: rgba(0, 0, 0, 0.1);
+    fill: rgba(255, 255, 255, 0.95);
+    stroke: #dee2e6;
     stroke-width: 1px;
-    rx: 3;
+    rx: 4;
+    pointer-events: none;
 }
 
 /* Tooltip Styles */
@@ -295,6 +295,16 @@
     font-family: 'Roboto', sans-serif;
     font-weight: 600;
     text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.8);
+    pointer-events: none;
+}
+
+.device-count-badge {
+    opacity: 0.9;
+    transition: opacity 0.3s ease;
+}
+
+.device-count-text {
+    font-family: 'Roboto', sans-serif;
     pointer-events: none;
 }
 

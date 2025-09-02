@@ -183,26 +183,54 @@ document.addEventListener('DOMContentLoaded', function() {
         
         console.log('Site groups:', Object.keys(siteGroups));
         
-        // Calculate site positions in a grid
+        // Calculate dynamic site dimensions based on device count
         const siteNames = Object.keys(siteGroups);
         const sitesPerRow = Math.ceil(Math.sqrt(siteNames.length));
-        const siteWidth = (width - 100) / sitesPerRow;
-        const siteHeight = (height - 100) / Math.ceil(siteNames.length / sitesPerRow);
+        
+        // Dynamic sizing based on device count per site
+        const minSiteWidth = 200;
+        const minSiteHeight = 150;
+        const deviceSpacing = 25; // space needed per device
+        
+        const siteDimensions = {};
+        siteNames.forEach(siteName => {
+            const deviceCount = siteGroups[siteName].length;
+            const devicesPerRow = Math.ceil(Math.sqrt(deviceCount));
+            
+            siteDimensions[siteName] = {
+                width: Math.max(minSiteWidth, devicesPerRow * deviceSpacing * 2 + 100),
+                height: Math.max(minSiteHeight, Math.ceil(deviceCount / devicesPerRow) * deviceSpacing * 2 + 100)
+            };
+        });
+        
+        // Calculate total canvas dimensions needed
+        const maxSiteWidth = Math.max(...Object.values(siteDimensions).map(d => d.width));
+        const maxSiteHeight = Math.max(...Object.values(siteDimensions).map(d => d.height));
+        const totalWidth = sitesPerRow * (maxSiteWidth + 50) + 50;
+        const totalHeight = Math.ceil(siteNames.length / sitesPerRow) * (maxSiteHeight + 50) + 50;
+        
+        // Update SVG viewBox to accommodate dynamic sizing
+        svg.attr('viewBox', `0 0 ${Math.max(width, totalWidth)} ${Math.max(height, totalHeight)}`);
         
         // Convert devices to D3 nodes with site-based positioning
         const nodes = [];
         siteNames.forEach((siteName, siteIndex) => {
-            const siteX = (siteIndex % sitesPerRow) * siteWidth + siteWidth / 2 + 50;
-            const siteY = Math.floor(siteIndex / sitesPerRow) * siteHeight + siteHeight / 2 + 50;
+            const siteX = (siteIndex % sitesPerRow) * (maxSiteWidth + 50) + 50;
+            const siteY = Math.floor(siteIndex / sitesPerRow) * (maxSiteHeight + 50) + 50;
+            const siteDim = siteDimensions[siteName];
             
             siteGroups[siteName].forEach((device, deviceIndex) => {
-                // Position devices in a circle within each site area
+                // Position devices in a grid within each site area
                 const deviceCount = siteGroups[siteName].length;
-                const angle = (deviceIndex / deviceCount) * 2 * Math.PI;
-                const radius = Math.min(siteWidth, siteHeight) / 4;
+                const devicesPerRow = Math.ceil(Math.sqrt(deviceCount));
+                const deviceRow = Math.floor(deviceIndex / devicesPerRow);
+                const deviceCol = deviceIndex % devicesPerRow;
                 
-                const deviceX = siteX + Math.cos(angle) * radius;
-                const deviceY = siteY + Math.sin(angle) * radius;
+                const deviceSpacingX = (siteDim.width - 100) / Math.max(1, devicesPerRow - 1);
+                const deviceSpacingY = (siteDim.height - 100) / Math.max(1, Math.ceil(deviceCount / devicesPerRow) - 1);
+                
+                const deviceX = siteX + 50 + (deviceCol * deviceSpacingX);
+                const deviceY = siteY + 80 + (deviceRow * deviceSpacingY); // Leave room for site label
                 
                 nodes.push({
                     id: device.id,
@@ -212,6 +240,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     siteName: siteName,
                     siteX: siteX,
                     siteY: siteY,
+                    siteDimensions: siteDim,
                     role: device.role,
                     status: device.status,
                     deviceType: device.device_type.model,
@@ -248,44 +277,65 @@ document.addEventListener('DOMContentLoaded', function() {
         
         console.log(`Created visualization with ${nodes.length} nodes and ${links.length} links across ${siteNames.length} sites`);
         
-        // Draw site boundaries
+        // Draw site boundaries with dynamic sizing
         const siteGroup = g.append('g').attr('class', 'sites');
         siteNames.forEach((siteName, siteIndex) => {
-            const siteX = (siteIndex % sitesPerRow) * siteWidth + 50;
-            const siteY = Math.floor(siteIndex / sitesPerRow) * siteHeight + 50;
+            const siteX = (siteIndex % sitesPerRow) * (maxSiteWidth + 50) + 50;
+            const siteY = Math.floor(siteIndex / sitesPerRow) * (maxSiteHeight + 50) + 50;
+            const siteDim = siteDimensions[siteName];
             
-            // Site boundary rectangle
+            // Site boundary rectangle with dynamic size
             siteGroup.append('rect')
                 .attr('class', 'site-boundary')
                 .attr('x', siteX)
                 .attr('y', siteY)
-                .attr('width', siteWidth - 20)
-                .attr('height', siteHeight - 20)
+                .attr('width', siteDim.width)
+                .attr('height', siteDim.height)
                 .attr('fill', 'none')
                 .attr('stroke', '#dee2e6')
                 .attr('stroke-width', 2)
                 .attr('stroke-dasharray', '5,5')
                 .attr('rx', 10);
             
-            // Site label
+            // Site label with better styling
             siteGroup.append('text')
                 .attr('class', 'site-label')
-                .attr('x', siteX + (siteWidth - 20) / 2)
+                .attr('x', siteX + siteDim.width / 2)
                 .attr('y', siteY + 20)
                 .attr('text-anchor', 'middle')
                 .attr('font-size', '14px')
                 .attr('font-weight', 'bold')
                 .attr('fill', '#495057')
                 .text(siteName);
+            
+            // Add device count badge
+            siteGroup.append('circle')
+                .attr('class', 'device-count-badge')
+                .attr('cx', siteX + siteDim.width - 20)
+                .attr('cy', siteY + 20)
+                .attr('r', 12)
+                .attr('fill', '#007bff')
+                .attr('stroke', '#fff')
+                .attr('stroke-width', 2);
+            
+            siteGroup.append('text')
+                .attr('class', 'device-count-text')
+                .attr('x', siteX + siteDim.width - 20)
+                .attr('y', siteY + 25)
+                .attr('text-anchor', 'middle')
+                .attr('font-size', '10px')
+                .attr('font-weight', 'bold')
+                .attr('fill', 'white')
+                .text(siteGroups[siteName].length);
         });
         
         // Create force simulation with reduced forces for organized layout
         const simulation = d3.forceSimulation(nodes)
             .force('link', d3.forceLink(links).id(d => d.id).distance(150).strength(0.3))
-            .force('charge', d3.forceManyBody().strength(-100).distanceMax(200))
+            .force('charge', d3.forceManyBody().strength(-50).distanceMax(100))
             .force('collision', d3.forceCollide().radius(30))
-            .alpha(0.3) // Lower alpha for gentler movement
-            .alphaDecay(0.02);
+            .alpha(0.2) // Lower alpha for gentler movement
+            .alphaDecay(0.05);
         
         // Draw connections
         const linkGroup = g.append('g').attr('class', 'links');
@@ -325,7 +375,7 @@ document.addEventListener('DOMContentLoaded', function() {
             .attr('fill', 'white')
             .text(d => d.icon);
         
-        // Add labels
+        // Add labels with better styling
         const labelGroup = g.append('g').attr('class', 'labels');
         const labelElements = labelGroup
             .selectAll('g')
@@ -333,31 +383,37 @@ document.addEventListener('DOMContentLoaded', function() {
             .enter()
             .append('g');
         
-        // Label background
+        // Label background (white with border)
         labelElements.append('rect')
             .attr('class', 'device-label-background')
-            .attr('width', d => Math.max(d.name.length * 7, 50))
-            .attr('height', 16)
-            .attr('x', d => -Math.max(d.name.length * 7, 50) / 2)
-            .attr('y', -35);
+            .attr('width', d => Math.max(d.name.length * 8, 60))
+            .attr('height', 18)
+            .attr('x', d => -Math.max(d.name.length * 8, 60) / 2)
+            .attr('y', -40)
+            .attr('rx', 4)
+            .attr('fill', 'rgba(255, 255, 255, 0.95)')
+            .attr('stroke', '#dee2e6')
+            .attr('stroke-width', 1);
         
-        // Label text
+        // Label text (dark text on white background)
         labelElements.append('text')
             .attr('class', 'device-label')
             .text(d => d.name.length > 12 ? d.name.substring(0, 12) + '...' : d.name)
-            .attr('y', -27);
+            .attr('y', -30)
+            .attr('text-anchor', 'middle')
+            .attr('font-size', '11px')
+            .attr('font-weight', '500')
+            .attr('fill', '#333333');
         
         // Update positions on simulation tick (allow some movement within site bounds)
         simulation.on('tick', () => {
             // Keep nodes within their site boundaries
             nodes.forEach(d => {
-                const margin = 40;
-                const siteIndex = Object.keys(siteGroups).indexOf(d.siteName);
-                const siteX = (siteIndex % sitesPerRow) * siteWidth + 50;
-                const siteY = Math.floor(siteIndex / sitesPerRow) * siteHeight + 50;
+                const margin = 30;
+                const siteDim = d.siteDimensions;
                 
-                d.x = Math.max(siteX + margin, Math.min(siteX + siteWidth - 40 - margin, d.x));
-                d.y = Math.max(siteY + margin + 30, Math.min(siteY + siteHeight - 40 - margin, d.y));
+                d.x = Math.max(d.siteX + margin, Math.min(d.siteX + siteDim.width - margin, d.x));
+                d.y = Math.max(d.siteY + margin + 40, Math.min(d.siteY + siteDim.height - margin, d.y));
             });
             
             linkElements
