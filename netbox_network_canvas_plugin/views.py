@@ -237,12 +237,17 @@ class EnhancedDashboardView(TemplateView):
     def _get_enhanced_topology_data(self):
         """Get enhanced network topology data with better connection detection"""
         try:
-            # Get all active devices with related data
+            # Get devices with related data - remove restrictive status filter
             devices = Device.objects.select_related(
                 'device_type', 'device_type__manufacturer', 'site', 'role', 'primary_ip4', 'primary_ip6'
-            ).prefetch_related('interfaces').filter(
-                status='active'
-            ).all()[:300]  # Increased limit
+            ).prefetch_related('interfaces').all()[:300]  # Get all devices, not just active
+            
+            print(f"Enhanced query found {len(devices)} total devices")
+            
+            # Debug: Check device statuses
+            if devices:
+                statuses = set(str(d.status) for d in devices)
+                print(f"Device statuses found: {statuses}")
             
             device_ids = [d.id for d in devices]
             
@@ -383,6 +388,66 @@ class EnhancedDashboardView(TemplateView):
         except Exception as e:
             print(f"Cable processing error for cable {cable.id}: {e}")
             return None
+
+
+class DebugDataView(View):
+    """Debug endpoint to check NetBox data availability"""
+    
+    def get(self, request):
+        """Return debug information about NetBox data"""
+        try:
+            debug_info = {
+                'total_devices': Device.objects.count(),
+                'devices_with_sites': Device.objects.exclude(site__isnull=True).count(),
+                'total_sites': Device.objects.values('site__name').distinct().count(),
+                'total_cables': Cable.objects.count(),
+            }
+            
+            # Get device statuses
+            device_statuses = {}
+            for device in Device.objects.all()[:50]:
+                status = str(device.status)
+                device_statuses[status] = device_statuses.get(status, 0) + 1
+            
+            debug_info['device_statuses'] = device_statuses
+            
+            # Get sample devices
+            sample_devices = []
+            for device in Device.objects.select_related('site', 'device_type', 'role')[:10]:
+                sample_devices.append({
+                    'id': device.id,
+                    'name': device.name,
+                    'site': device.site.name if device.site else None,
+                    'status': str(device.status),
+                    'device_type': device.device_type.model if device.device_type else None,
+                    'role': device.role.name if device.role else None,
+                })
+            
+            debug_info['sample_devices'] = sample_devices
+            
+            # Get site information
+            sites = []
+            from django.db.models import Count
+            site_data = Device.objects.values('site__name').annotate(
+                device_count=Count('id')
+            ).order_by('-device_count')[:10]
+            
+            for site in site_data:
+                if site['site__name']:
+                    sites.append({
+                        'name': site['site__name'],
+                        'device_count': site['device_count']
+                    })
+            
+            debug_info['sites'] = sites
+            
+            return JsonResponse(debug_info, indent=2)
+            
+        except Exception as e:
+            return JsonResponse({
+                'error': str(e),
+                'message': 'Debug data collection failed'
+            }, status=500)
 
 
 class TopologyDataView(View):

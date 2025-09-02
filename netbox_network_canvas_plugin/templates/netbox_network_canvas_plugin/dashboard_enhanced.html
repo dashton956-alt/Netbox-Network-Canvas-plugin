@@ -200,7 +200,38 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('Enhanced topology data loaded:', topologyData);
         
         if (!topologyData.devices || topologyData.devices.length === 0) {
-            throw new Error('No devices found in NetBox. Please add some devices first.');
+            const errorMessage = `
+                <div class="alert alert-warning">
+                    <h6><i class="mdi mdi-alert"></i> No Devices Found</h6>
+                    <p>The enhanced dashboard couldn't find any devices in NetBox.</p>
+                    <div class="mt-3">
+                        <strong>Debugging Information:</strong>
+                        <ul class="mt-2">
+                            <li>Total devices loaded: ${topologyData.devices ? topologyData.devices.length : 0}</li>
+                            <li>Total sites: ${topologyData.sites ? topologyData.sites.length : 0}</li>
+                            <li>Total connections: ${topologyData.connections ? topologyData.connections.length : 0}</li>
+                        </ul>
+                    </div>
+                    <div class="mt-3">
+                        <strong>Possible solutions:</strong>
+                        <ul class="mt-2">
+                            <li>Ensure NetBox has devices configured with sites assigned</li>
+                            <li>Check that devices have device types and roles set</li>
+                            <li>Verify devices are in any status (not just 'active')</li>
+                        </ul>
+                    </div>
+                    <div class="mt-3">
+                        <a href="../api/debug-data/" class="btn btn-sm btn-info" target="_blank">
+                            <i class="mdi mdi-bug"></i> View Debug Data
+                        </a>
+                        <button class="btn btn-sm btn-primary" onclick="location.reload()">
+                            <i class="mdi mdi-refresh"></i> Retry
+                        </button>
+                    </div>
+                </div>
+            `;
+            d3.select('#loading').html(errorMessage);
+            return;
         }
         
         console.log(`Loaded ${topologyData.devices.length} devices, ${topologyData.connections?.length || 0} connections, ${topologyData.sites?.length || 0} sites`);
