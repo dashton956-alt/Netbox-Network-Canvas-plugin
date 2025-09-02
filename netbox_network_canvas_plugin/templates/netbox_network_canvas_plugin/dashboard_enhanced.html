@@ -200,6 +200,7 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('Enhanced topology data loaded:', topologyData);
         
         if (!topologyData.devices || topologyData.devices.length === 0) {
+            const debugInfo = topologyData.debug || {};
             const errorMessage = `
                 <div class="alert alert-warning">
                     <h6><i class="mdi mdi-alert"></i> No Devices Found</h6>
@@ -207,17 +208,97 @@ document.addEventListener('DOMContentLoaded', function() {
                     <div class="mt-3">
                         <strong>Debugging Information:</strong>
                         <ul class="mt-2">
-                            <li>Total devices loaded: ${topologyData.devices ? topologyData.devices.length : 0}</li>
-                            <li>Total sites: ${topologyData.sites ? topologyData.sites.length : 0}</li>
-                            <li>Total connections: ${topologyData.connections ? topologyData.connections.length : 0}</li>
+                            <li>Total devices queried: ${debugInfo.total_devices_queried || 0}</li>
+                            <li>Devices with sites: ${debugInfo.devices_with_sites || 0}</li>
+                            <li>Devices without sites: ${debugInfo.devices_without_sites || 0}</li>
+                            <li>Devices processed: ${debugInfo.devices_processed || 0}</li>
+                            <li>Sites created: ${debugInfo.sites_created || 0}</li>
+                            <li>Final device count: ${debugInfo.final_device_count || 0}</li>
                         </ul>
                     </div>
+                    ${debugInfo.device_statuses ? `
+                        <div class="mt-3">
+                            <strong>Device Status Breakdown:</strong>
+                            <ul class="mt-2">
+                                ${Object.entries(debugInfo.device_statuses).map(([status, count]) => 
+                                    `<li>${status}: ${count} devices</li>`
+                                ).join('')}
+                            </ul>
+                        </div>
+                    ` : ''}
+                    ${debugInfo.sample_devices && debugInfo.sample_devices.length > 0 ? `
+                        <div class="mt-3">
+                            <strong>Sample Devices:</strong>
+                            <ul class="mt-2">
+                                ${debugInfo.sample_devices.slice(0, 5).map(device => 
+                                    `<li>ID:${device.id} "${device.name}" | Site: ${device.site || 'None'} | Status: ${device.status}</li>`
+                                ).join('')}
+                            </ul>
+                        </div>
+                    ` : ''}
+                    ${debugInfo.device_processing_errors ? `
+                        <div class="mt-3">
+                            <strong>Processing Errors:</strong>
+                            <ul class="mt-2">
+                                ${debugInfo.device_processing_errors.slice(0, 3).map(error => 
+                                    `<li class="text-danger">${error}</li>`
+                                ).join('')}
+                            </ul>
+                        </div>
+                    ` : ''}
+                    
+                    ${debugInfo.total_cables_found !== undefined ? `
+                        <div class="mt-3">
+                            <strong>Cable Information:</strong>
+                            <ul class="mt-2">
+                                <li>Total cables found: ${debugInfo.total_cables_found || 0}</li>
+                                <li>Device connections: ${debugInfo.device_connections || 0}</li>
+                                <li>Circuit connections: ${debugInfo.circuit_connections || 0}</li>
+                                <li>Real connections found: ${debugInfo.real_connections_found || 0}</li>
+                                <li>Method used: ${debugInfo.method_used || 'none'}</li>
+                                ${debugInfo.using_real_connections ? `<li class="text-success">✅ Using real NetBox connections</li>` : ''}
+                                ${debugInfo.logical_connections_created ? `<li class="text-warning">⚠️ Using logical/mock connections: ${debugInfo.logical_connections_created}</li>` : ''}
+                            </ul>
+                        </div>
+                    ` : ''}
+                    
+                    ${debugInfo.connection_sample && debugInfo.connection_sample.length > 0 ? `
+                        <div class="mt-3">
+                            <strong>Connection Sample:</strong>
+                            <ul class="mt-2">
+                                ${debugInfo.connection_sample.map(conn => 
+                                    `<li>Connection ${conn.id}: ${conn.source} → ${conn.target} (${conn.type}) ${conn.logical ? '[MOCK]' : '[REAL]'}</li>`
+                                ).join('')}
+                            </ul>
+                        </div>
+                    ` : ''}
+                    
+                    ${debugInfo.cable_details && debugInfo.cable_details.length > 0 ? `
+                        <div class="mt-3">
+                            <strong>Cable Details (first 5):</strong>
+                            <ul class="mt-2">
+                                ${debugInfo.cable_details.map(cable => 
+                                    `<li><strong>Cable ${cable.id}</strong>: Type=${cable.type}, Status=${cable.status}
+                                     <br>&nbsp;&nbsp;A-side: ${cable.a_terminations_count || 0} terminations
+                                     ${cable.a_terminations.map(term => 
+                                        `<br>&nbsp;&nbsp;&nbsp;&nbsp;- ${term.term_type}: ${term.device_name || 'No Device'} (${term.in_our_devices ? 'IN SCOPE' : 'OUT OF SCOPE'})`
+                                     ).join('')}
+                                     <br>&nbsp;&nbsp;B-side: ${cable.b_terminations_count || 0} terminations
+                                     ${cable.b_terminations.map(term => 
+                                        `<br>&nbsp;&nbsp;&nbsp;&nbsp;- ${term.term_type}: ${term.device_name || 'No Device'} (${term.in_our_devices ? 'IN SCOPE' : 'OUT OF SCOPE'})`
+                                     ).join('')}</li>`
+                                ).join('')}
+                            </ul>
+                        </div>
+                    ` : ''}
+                    
                     <div class="mt-3">
                         <strong>Possible solutions:</strong>
                         <ul class="mt-2">
                             <li>Ensure NetBox has devices configured with sites assigned</li>
                             <li>Check that devices have device types and roles set</li>
                             <li>Verify devices are in any status (not just 'active')</li>
+                            <li>Run the populate_demo_data.py script to create test data</li>
                         </ul>
                     </div>
                     <div class="mt-3">
@@ -235,6 +316,21 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         console.log(`Loaded ${topologyData.devices.length} devices, ${topologyData.connections?.length || 0} connections, ${topologyData.sites?.length || 0} sites`);
+        
+        // Log connection details for debugging
+        if (topologyData.connections && topologyData.connections.length > 0) {
+            console.log('Raw connections from server:', topologyData.connections);
+            topologyData.connections.forEach((conn, index) => {
+                console.log(`Connection ${index + 1}:`, {
+                    id: conn.id,
+                    source: conn.source,
+                    target: conn.target,
+                    type: conn.type,
+                    status: conn.status,
+                    real: conn.logical === false
+                });
+            });
+        }
         
         createEnhancedVisualization(topologyData);
         
@@ -369,8 +465,9 @@ document.addEventListener('DOMContentLoaded', function() {
     function createEnhancedLinks(data, nodeById, nodes) {
         const links = [];
         
-        // Use real connections if available
+        // Use ONLY real connections from NetBox
         if (data.connections && data.connections.length > 0) {
+            console.log(`Processing ${data.connections.length} real connections from NetBox`);
             data.connections.forEach(conn => {
                 const sourceNode = nodeById.get(conn.source);
                 const targetNode = nodeById.get(conn.target);
@@ -382,33 +479,19 @@ document.addEventListener('DOMContentLoaded', function() {
                         type: conn.type || 'ethernet',
                         status: conn.status || 'connected',
                         length: conn.length,
-                        id: conn.id
+                        id: conn.id,
+                        real: true
                     });
+                    console.log(`Added real connection: ${conn.source} -> ${conn.target}`);
+                } else {
+                    console.warn(`Connection ${conn.id} skipped - missing nodes: source=${!!sourceNode}, target=${!!targetNode}`);
                 }
             });
+        } else {
+            console.log('No real connections found in data');
         }
         
-        // Add some inter-site connections for demonstration if no real connections
-        if (links.length === 0) {
-            const siteNames = [...new Set(nodes.map(n => n.siteName))];
-            for (let i = 0; i < siteNames.length - 1; i++) {
-                const site1Devices = nodes.filter(n => n.siteName === siteNames[i]);
-                const site2Devices = nodes.filter(n => n.siteName === siteNames[i + 1]);
-                
-                if (site1Devices.length > 0 && site2Devices.length > 0) {
-                    const site1Router = site1Devices.find(d => d.type === 'router') || site1Devices[0];
-                    const site2Router = site2Devices.find(d => d.type === 'router') || site2Devices[0];
-                    
-                    links.push({
-                        source: site1Router,
-                        target: site2Router,
-                        type: 'wan',
-                        status: 'connected'
-                    });
-                }
-            }
-        }
-        
+        console.log(`Created ${links.length} total links`);
         return links;
     }
     
@@ -647,7 +730,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     function createNetworkElements(nodes, links) {
-        // Create links
+        // Create connection lines
         const linkElements = g.append('g')
             .attr('class', 'links')
             .selectAll('line')
@@ -656,8 +739,24 @@ document.addEventListener('DOMContentLoaded', function() {
             .append('line')
             .attr('class', 'connection')
             .attr('stroke', d => getConnectionColor(d))
-            .attr('stroke-width', d => getConnectionWidth(d))
-            .attr('stroke-opacity', 0.8);
+            .attr('stroke-width', d => Math.max(4, getConnectionWidth(d))) // Make connections thicker
+            .attr('stroke-opacity', 1) // Full opacity
+            .style('stroke-dasharray', d => d.real ? 'none' : '5,5') // Solid for real, dashed for demo
+            .on('mouseover', function(event, d) {
+                d3.select(this)
+                    .attr('stroke-width', 6)
+                    .attr('stroke-opacity', 1);
+                
+                // Show connection tooltip
+                showConnectionTooltip(event, d);
+            })
+            .on('mouseout', function(event, d) {
+                d3.select(this)
+                    .attr('stroke-width', d => Math.max(4, getConnectionWidth(d)))
+                    .attr('stroke-opacity', 1);
+                
+                hideTooltip();
+            });
         
         // Create node groups
         const nodeElements = g.append('g')
@@ -869,9 +968,31 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     function getConnectionWidth(link) {
-        if (link.status === 'connected') return 3;
-        if (link.status === 'planned') return 2;
-        return 1;
+        if (link.status === 'connected') return 5; // Make real connections thicker
+        if (link.status === 'planned') return 3;
+        return 2;
+    }
+    
+    function showConnectionTooltip(event, d) {
+        const tooltip = d3.select('body').selectAll('.connection-tooltip').data([d]);
+        const enter = tooltip.enter().append('div').attr('class', 'connection-tooltip topology-tooltip');
+        
+        enter.merge(tooltip)
+            .style('opacity', 0)
+            .style('left', (event.pageX + 10) + 'px')
+            .style('top', (event.pageY - 10) + 'px')
+            .html(`
+                <strong>Connection ${d.id}</strong><br>
+                <strong>Type:</strong> ${d.type}<br>
+                <strong>Status:</strong> ${d.status}<br>
+                <strong>From:</strong> ${d.source.name}<br>
+                <strong>To:</strong> ${d.target.name}<br>
+                ${d.length ? `<strong>Length:</strong> ${d.length}m` : ''}
+                ${d.real ? '<br><span style="color: #28a745;">✅ Real NetBox Connection</span>' : '<br><span style="color: #ffc107;">⚠️ Demo Connection</span>'}
+            `)
+            .transition()
+            .duration(200)
+            .style('opacity', 1);
     }
     
     function showEnhancedTooltip(event, d) {
