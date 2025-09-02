@@ -7,9 +7,9 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name =  "netbox-network-canvas-plugin"
-version = "0.1.0"
+version = "0.1.4"
 authors = [
-    {name = "Your Name", email = "your.email@example.com"},
+    {name = "Dan Ashton", email = "dashton956@gmail.com"},
 ]
 description = "Interactive network topology visualization for NetBox DCIM/IPAM data with comprehensive Layer 2/Layer 3 mapping, VLAN visualization, and real-time network discovery."
 readme = "README.md"
