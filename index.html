@@ -1,0 +1,2612 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://dashton956-alt.github.io/netbox-network-canvas-plugin/">
+      
+      
+      
+        <link rel="next" href="contributing/">
+      
+      
+      <link rel="icon" href="assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.18">
+    
+    
+      
+        <title>NetBox Network Canvas Plugin</title>
+      
+    
+    
+      <link rel="stylesheet" href="assets/stylesheets/main.7e37652d.min.css">
+      
+        
+        <link rel="stylesheet" href="assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="preference" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#netbox-network-canvas-plugin" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="." title="NetBox Network Canvas Plugin" class="md-header__button md-logo" aria-label="NetBox Network Canvas Plugin" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            NetBox Network Canvas Plugin
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Home
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/dashton956-alt/netbox-network-canvas-plugin" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    dashton956-alt/netbox-network-canvas-plugin
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="." title="NetBox Network Canvas Plugin" class="md-nav__button md-logo" aria-label="NetBox Network Canvas Plugin" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    NetBox Network Canvas Plugin
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/dashton956-alt/netbox-network-canvas-plugin" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    dashton956-alt/netbox-network-canvas-plugin
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="." class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#netbox-network-canvas-plugin" class="md-nav__link">
+    <span class="md-ellipsis">
+      NetBox Network Canvas Plugin
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="NetBox Network Canvas Plugin">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#-quick-start" class="md-nav__link">
+    <span class="md-ellipsis">
+      ⚡ Quick Start
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-key-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      🎯 Key Features
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🎯 Key Features">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#-site-based-organization" class="md-nav__link">
+    <span class="md-ellipsis">
+      �️ Site-Based Organization
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-professional-visualization" class="md-nav__link">
+    <span class="md-ellipsis">
+      � Professional Visualization
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-real-time-dashboard" class="md-nav__link">
+    <span class="md-ellipsis">
+      📊 Real-Time Dashboard
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-advanced-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔧 Advanced Features
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-compatibility--testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      🏷️ Compatibility &amp; Testing
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🏷️ Compatibility &amp; Testing">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#system-requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      System Requirements
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      📦 Installation
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="📦 Installation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#method-1-netbox-docker-setup-recommended" class="md-nav__link">
+    <span class="md-ellipsis">
+      Method 1: NetBox Docker Setup (Recommended)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-2-standard-netbox-installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Method 2: Standard NetBox Installation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-configuration-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔧 Configuration Options
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-verify-installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      ✅ Verify Installation
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-quick-usage-guide" class="md-nav__link">
+    <span class="md-ellipsis">
+      🚀 Quick Usage Guide
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🚀 Quick Usage Guide">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#-getting-started-5-minutes" class="md-nav__link">
+    <span class="md-ellipsis">
+      🎯 Getting Started (5 Minutes)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-interactive-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      🎨 Interactive Features
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🎨 Interactive Features">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#navigation--controls" class="md-nav__link">
+    <span class="md-ellipsis">
+      Navigation &amp; Controls
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#device-information" class="md-nav__link">
+    <span class="md-ellipsis">
+      Device Information
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#site-organization" class="md-nav__link">
+    <span class="md-ellipsis">
+      Site Organization
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-demo-data-for-testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      📊 Demo Data for Testing
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-dashboard-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      📱 Dashboard Features
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="📱 Dashboard Features">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#network-statistics-panel" class="md-nav__link">
+    <span class="md-ellipsis">
+      Network Statistics Panel
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#live-topology-view" class="md-nav__link">
+    <span class="md-ellipsis">
+      Live Topology View
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-canvas-management" class="md-nav__link">
+    <span class="md-ellipsis">
+      🎯 Canvas Management
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🎯 Canvas Management">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#creating-canvases" class="md-nav__link">
+    <span class="md-ellipsis">
+      Creating Canvases
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#managing-canvases" class="md-nav__link">
+    <span class="md-ellipsis">
+      Managing Canvases
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#api-endpoints" class="md-nav__link">
+    <span class="md-ellipsis">
+      API Endpoints
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="API Endpoints">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#topology-data-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      Topology Data API
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dashboard-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      Dashboard API
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#development" class="md-nav__link">
+    <span class="md-ellipsis">
+      Development
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Development">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#local-development-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      Local Development Setup
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plugin-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      Plugin Architecture
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#key-components" class="md-nav__link">
+    <span class="md-ellipsis">
+      Key Components
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#contributing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Contributing
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Contributing">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#areas-for-contribution" class="md-nav__link">
+    <span class="md-ellipsis">
+      Areas for Contribution
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      🛠️ Troubleshooting
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🛠️ Troubleshooting">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#common-issues--solutions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Common Issues &amp; Solutions
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Common Issues &amp; Solutions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#-no-devices-found-in-dashboard" class="md-nav__link">
+    <span class="md-ellipsis">
+      ❌ "No devices found" in Dashboard
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-dashboard-loading-slowly" class="md-nav__link">
+    <span class="md-ellipsis">
+      🐌 Dashboard Loading Slowly
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-visualization-not-displaying" class="md-nav__link">
+    <span class="md-ellipsis">
+      🖥️ Visualization Not Displaying
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-plugin-not-in-navigation-menu" class="md-nav__link">
+    <span class="md-ellipsis">
+      📱 Plugin Not in Navigation Menu
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-json-serialization-errors" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔧 JSON Serialization Errors
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-labels-not-visible" class="md-nav__link">
+    <span class="md-ellipsis">
+      🎨 Labels Not Visible
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-debug-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔍 Debug Mode
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-performance-tips" class="md-nav__link">
+    <span class="md-ellipsis">
+      📊 Performance Tips
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="📊 Performance Tips">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#for-large-networks-500-devices" class="md-nav__link">
+    <span class="md-ellipsis">
+      For Large Networks (500+ devices)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#database-optimization" class="md-nav__link">
+    <span class="md-ellipsis">
+      Database Optimization
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-getting-help" class="md-nav__link">
+    <span class="md-ellipsis">
+      🆘 Getting Help
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-system-requirements-check" class="md-nav__link">
+    <span class="md-ellipsis">
+      📋 System Requirements Check
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-known-limitations" class="md-nav__link">
+    <span class="md-ellipsis">
+      ⚠️ Known Limitations
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-roadmap--future-development" class="md-nav__link">
+    <span class="md-ellipsis">
+      🚀 Roadmap &amp; Future Development
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🚀 Roadmap &amp; Future Development">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#version-015-current-development-" class="md-nav__link">
+    <span class="md-ellipsis">
+      Version 0.1.5 (Current Development) ✅
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#version-020-planned---q4-2025" class="md-nav__link">
+    <span class="md-ellipsis">
+      Version 0.2.0 (Planned - Q4 2025)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#version-030-future---q1-2026" class="md-nav__link">
+    <span class="md-ellipsis">
+      Version 0.3.0 (Future - Q1 2026)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#version-100-future---q2-2026" class="md-nav__link">
+    <span class="md-ellipsis">
+      Version 1.0.0 (Future - Q2 2026)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-research--experimental" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔬 Research &amp; Experimental
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-community-requests" class="md-nav__link">
+    <span class="md-ellipsis">
+      📊 Community Requests
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-contributing-to-development" class="md-nav__link">
+    <span class="md-ellipsis">
+      🤝 Contributing to Development
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🤝 Contributing to Development">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#code-contributions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Code Contributions
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#non-code-contributions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Non-Code Contributions
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-development-metrics" class="md-nav__link">
+    <span class="md-ellipsis">
+      📈 Development Metrics
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-license" class="md-nav__link">
+    <span class="md-ellipsis">
+      📄 License
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-credits--acknowledgments" class="md-nav__link">
+    <span class="md-ellipsis">
+      👥 Credits &amp; Acknowledgments
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="👥 Credits &amp; Acknowledgments">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#-primary-developer" class="md-nav__link">
+    <span class="md-ellipsis">
+      🚀 Primary Developer
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-built-with" class="md-nav__link">
+    <span class="md-ellipsis">
+      🛠️ Built With
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-learning-resources" class="md-nav__link">
+    <span class="md-ellipsis">
+      📚 Learning Resources
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-netbox-community" class="md-nav__link">
+    <span class="md-ellipsis">
+      🌟 NetBox Community
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-development-tools" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔧 Development Tools
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-inspiration--references" class="md-nav__link">
+    <span class="md-ellipsis">
+      📊 Inspiration &amp; References
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-contributing" class="md-nav__link">
+    <span class="md-ellipsis">
+      🤝 Contributing
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-support--community" class="md-nav__link">
+    <span class="md-ellipsis">
+      📞 Support &amp; Community
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="contributing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Contributing
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="changelog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Changelog
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#netbox-network-canvas-plugin" class="md-nav__link">
+    <span class="md-ellipsis">
+      NetBox Network Canvas Plugin
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="NetBox Network Canvas Plugin">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#-quick-start" class="md-nav__link">
+    <span class="md-ellipsis">
+      ⚡ Quick Start
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-key-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      🎯 Key Features
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🎯 Key Features">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#-site-based-organization" class="md-nav__link">
+    <span class="md-ellipsis">
+      �️ Site-Based Organization
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-professional-visualization" class="md-nav__link">
+    <span class="md-ellipsis">
+      � Professional Visualization
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-real-time-dashboard" class="md-nav__link">
+    <span class="md-ellipsis">
+      📊 Real-Time Dashboard
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-advanced-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔧 Advanced Features
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-compatibility--testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      🏷️ Compatibility &amp; Testing
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🏷️ Compatibility &amp; Testing">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#system-requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      System Requirements
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      📦 Installation
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="📦 Installation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#method-1-netbox-docker-setup-recommended" class="md-nav__link">
+    <span class="md-ellipsis">
+      Method 1: NetBox Docker Setup (Recommended)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-2-standard-netbox-installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Method 2: Standard NetBox Installation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-configuration-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔧 Configuration Options
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-verify-installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      ✅ Verify Installation
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-quick-usage-guide" class="md-nav__link">
+    <span class="md-ellipsis">
+      🚀 Quick Usage Guide
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🚀 Quick Usage Guide">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#-getting-started-5-minutes" class="md-nav__link">
+    <span class="md-ellipsis">
+      🎯 Getting Started (5 Minutes)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-interactive-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      🎨 Interactive Features
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🎨 Interactive Features">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#navigation--controls" class="md-nav__link">
+    <span class="md-ellipsis">
+      Navigation &amp; Controls
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#device-information" class="md-nav__link">
+    <span class="md-ellipsis">
+      Device Information
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#site-organization" class="md-nav__link">
+    <span class="md-ellipsis">
+      Site Organization
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-demo-data-for-testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      📊 Demo Data for Testing
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-dashboard-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      📱 Dashboard Features
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="📱 Dashboard Features">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#network-statistics-panel" class="md-nav__link">
+    <span class="md-ellipsis">
+      Network Statistics Panel
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#live-topology-view" class="md-nav__link">
+    <span class="md-ellipsis">
+      Live Topology View
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-canvas-management" class="md-nav__link">
+    <span class="md-ellipsis">
+      🎯 Canvas Management
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🎯 Canvas Management">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#creating-canvases" class="md-nav__link">
+    <span class="md-ellipsis">
+      Creating Canvases
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#managing-canvases" class="md-nav__link">
+    <span class="md-ellipsis">
+      Managing Canvases
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#api-endpoints" class="md-nav__link">
+    <span class="md-ellipsis">
+      API Endpoints
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="API Endpoints">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#topology-data-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      Topology Data API
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dashboard-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      Dashboard API
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#development" class="md-nav__link">
+    <span class="md-ellipsis">
+      Development
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Development">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#local-development-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      Local Development Setup
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plugin-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      Plugin Architecture
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#key-components" class="md-nav__link">
+    <span class="md-ellipsis">
+      Key Components
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#contributing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Contributing
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Contributing">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#areas-for-contribution" class="md-nav__link">
+    <span class="md-ellipsis">
+      Areas for Contribution
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      🛠️ Troubleshooting
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🛠️ Troubleshooting">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#common-issues--solutions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Common Issues &amp; Solutions
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Common Issues &amp; Solutions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#-no-devices-found-in-dashboard" class="md-nav__link">
+    <span class="md-ellipsis">
+      ❌ "No devices found" in Dashboard
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-dashboard-loading-slowly" class="md-nav__link">
+    <span class="md-ellipsis">
+      🐌 Dashboard Loading Slowly
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-visualization-not-displaying" class="md-nav__link">
+    <span class="md-ellipsis">
+      🖥️ Visualization Not Displaying
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-plugin-not-in-navigation-menu" class="md-nav__link">
+    <span class="md-ellipsis">
+      📱 Plugin Not in Navigation Menu
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-json-serialization-errors" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔧 JSON Serialization Errors
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-labels-not-visible" class="md-nav__link">
+    <span class="md-ellipsis">
+      🎨 Labels Not Visible
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-debug-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔍 Debug Mode
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-performance-tips" class="md-nav__link">
+    <span class="md-ellipsis">
+      📊 Performance Tips
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="📊 Performance Tips">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#for-large-networks-500-devices" class="md-nav__link">
+    <span class="md-ellipsis">
+      For Large Networks (500+ devices)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#database-optimization" class="md-nav__link">
+    <span class="md-ellipsis">
+      Database Optimization
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-getting-help" class="md-nav__link">
+    <span class="md-ellipsis">
+      🆘 Getting Help
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-system-requirements-check" class="md-nav__link">
+    <span class="md-ellipsis">
+      📋 System Requirements Check
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-known-limitations" class="md-nav__link">
+    <span class="md-ellipsis">
+      ⚠️ Known Limitations
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-roadmap--future-development" class="md-nav__link">
+    <span class="md-ellipsis">
+      🚀 Roadmap &amp; Future Development
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🚀 Roadmap &amp; Future Development">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#version-015-current-development-" class="md-nav__link">
+    <span class="md-ellipsis">
+      Version 0.1.5 (Current Development) ✅
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#version-020-planned---q4-2025" class="md-nav__link">
+    <span class="md-ellipsis">
+      Version 0.2.0 (Planned - Q4 2025)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#version-030-future---q1-2026" class="md-nav__link">
+    <span class="md-ellipsis">
+      Version 0.3.0 (Future - Q1 2026)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#version-100-future---q2-2026" class="md-nav__link">
+    <span class="md-ellipsis">
+      Version 1.0.0 (Future - Q2 2026)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-research--experimental" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔬 Research &amp; Experimental
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-community-requests" class="md-nav__link">
+    <span class="md-ellipsis">
+      📊 Community Requests
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-contributing-to-development" class="md-nav__link">
+    <span class="md-ellipsis">
+      🤝 Contributing to Development
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🤝 Contributing to Development">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#code-contributions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Code Contributions
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#non-code-contributions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Non-Code Contributions
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-development-metrics" class="md-nav__link">
+    <span class="md-ellipsis">
+      📈 Development Metrics
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-license" class="md-nav__link">
+    <span class="md-ellipsis">
+      📄 License
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-credits--acknowledgments" class="md-nav__link">
+    <span class="md-ellipsis">
+      👥 Credits &amp; Acknowledgments
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="👥 Credits &amp; Acknowledgments">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#-primary-developer" class="md-nav__link">
+    <span class="md-ellipsis">
+      🚀 Primary Developer
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-built-with" class="md-nav__link">
+    <span class="md-ellipsis">
+      🛠️ Built With
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-learning-resources" class="md-nav__link">
+    <span class="md-ellipsis">
+      📚 Learning Resources
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-netbox-community" class="md-nav__link">
+    <span class="md-ellipsis">
+      🌟 NetBox Community
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-development-tools" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔧 Development Tools
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-inspiration--references" class="md-nav__link">
+    <span class="md-ellipsis">
+      📊 Inspiration &amp; References
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-contributing" class="md-nav__link">
+    <span class="md-ellipsis">
+      🤝 Contributing
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-support--community" class="md-nav__link">
+    <span class="md-ellipsis">
+      📞 Support &amp; Community
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+  <h1>Home</h1>
+
+<h2 id="netbox-network-canvas-plugin">NetBox Network Canvas Plugin<a class="headerlink" href="#netbox-network-canvas-plugin" title="Permanent link">&para;</a></h2>
+<p>🚀 <strong>Advanced Site-Based Network Topology Visualization for NetBox v0.1.5</strong></p>
+<p>Transform your NetBox DCIM/IPAM data into beautiful, interactive network topology diagrams with hierarchical device layout, draggable site containers, and professional enterprise-ready styling.</p>
+<p><img alt="Network Topology Visualization" src="https://via.placeholder.com/800x400/007bff/ffffff?text=Interactive+Network+Topology+Canvas" /></p>
+<h3 id="-quick-start">⚡ Quick Start<a class="headerlink" href="#-quick-start" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>Install</strong>: <code>pip install git+https://github.com/dashton956-alt/netbox-network-canvas-plugin</code></li>
+<li><strong>Configure</strong>: Add to NetBox <code>PLUGINS</code> list in configuration</li>
+<li><strong>Migrate</strong>: Run <code>python manage.py migrate netbox_network_canvas_plugin</code></li>
+<li><strong>Access</strong>: Navigate to <strong>Plugins &gt; Network Canvas</strong> in NetBox</li>
+<li><strong>Visualize</strong>: Create your first interactive topology canvas!</li>
+</ol>
+<h3 id="-key-features">🎯 Key Features<a class="headerlink" href="#-key-features" title="Permanent link">&para;</a></h3>
+<h4 id="-site-based-organization">�️ <strong>Site-Based Organization</strong><a class="headerlink" href="#-site-based-organization" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Smart Site Grouping</strong>: Devices automatically organized by NetBox sites</li>
+<li><strong>Dynamic Sizing</strong>: Site containers resize based on device count</li>
+<li><strong>Visual Boundaries</strong>: Clear site separation with rounded containers</li>
+<li><strong>Device Count Badges</strong>: Quick overview of devices per site</li>
+</ul>
+<h4 id="-professional-visualization">� <strong>Professional Visualization</strong><a class="headerlink" href="#-professional-visualization" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Device Type Icons</strong>: Distinct visual representation for routers, switches, VMs, firewalls, APs</li>
+<li><strong>Color-Coded Categories</strong>: Consistent color scheme across device types</li>
+<li><strong>Grid-Based Layout</strong>: Intelligent device positioning within sites</li>
+<li><strong>Interactive Controls</strong>: Zoom, pan, drag-to-position with smooth animations</li>
+</ul>
+<h4 id="-real-time-dashboard">📊 <strong>Real-Time Dashboard</strong><a class="headerlink" href="#-real-time-dashboard" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Live NetBox Data</strong>: Direct integration with your NetBox database</li>
+<li><strong>Network Statistics</strong>: Device, site, and connection overview</li>
+<li><strong>Performance Optimized</strong>: Efficient queries with configurable limits</li>
+<li><strong>Responsive Design</strong>: Works on desktop, tablet, and mobile devices</li>
+</ul>
+<h4 id="-advanced-features">🔧 <strong>Advanced Features</strong><a class="headerlink" href="#-advanced-features" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Canvas Management</strong>: Create, edit, and organize multiple topology views</li>
+<li><strong>Search &amp; Filtering</strong>: Find and filter devices across your network</li>
+<li><strong>RESTful API</strong>: Access topology data programmatically</li>
+<li><strong>Demo Data Tools</strong>: Populate NetBox with sample data for testing</li>
+</ul>
+<h3 id="-compatibility--testing">🏷️ Compatibility &amp; Testing<a class="headerlink" href="#-compatibility--testing" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>NetBox Version</th>
+<th>Plugin Status</th>
+<th>Test Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>v4.3.7</strong></td>
+<td>✅ <strong>Fully Supported</strong></td>
+<td>🧪 <strong>Thoroughly Tested</strong></td>
+</tr>
+<tr>
+<td>v4.0.x - v4.3.6</td>
+<td>⚠️ Limited Support</td>
+<td>❌ Not Tested</td>
+</tr>
+<tr>
+<td>v3.x.x</td>
+<td>❌ Not Supported</td>
+<td>❌ Not Tested</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>⚠️ Important:</strong> This plugin is <strong>tested and verified with NetBox v4.3.7 only</strong>. While it may work with other versions, <strong>compatibility is not guaranteed</strong> for any version other than v4.3.7. Field mappings and data structures may vary between NetBox versions.</p>
+</blockquote>
+<h4 id="system-requirements">System Requirements<a class="headerlink" href="#system-requirements" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>NetBox</strong>: v4.3.7 (recommended and tested)</li>
+<li><strong>Python</strong>: 3.8 or higher</li>
+<li><strong>Browser</strong>: Modern browser with JavaScript enabled (Chrome, Firefox, Safari, Edge)</li>
+<li><strong>Database</strong>: PostgreSQL (NetBox requirement)</li>
+</ul>
+<h3 id="-installation">📦 Installation<a class="headerlink" href="#-installation" title="Permanent link">&para;</a></h3>
+<h4 id="method-1-netbox-docker-setup-recommended">Method 1: NetBox Docker Setup (Recommended)<a class="headerlink" href="#method-1-netbox-docker-setup-recommended" title="Permanent link">&para;</a></h4>
+<p>If you're using the official NetBox Docker setup, follow these steps:</p>
+<ol>
+<li><strong>Add to Plugin Requirements</strong></li>
+</ol>
+<p>Edit your <code>plugin_requirements.txt</code> file:
+   <div class="highlight"><pre><span></span><code>git+https://github.com/dashton956-alt/netbox-network-canvas-plugin
+</code></pre></div></p>
+<ol>
+<li><strong>Enable in Configuration</strong></li>
+</ol>
+<p>Add to your <code>/configuration/plugins.py</code>:
+   <div class="highlight"><pre><span></span><code><span class="n">PLUGINS</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;netbox_network_canvas_plugin&#39;</span><span class="p">,</span>
+    <span class="c1"># ... your other plugins</span>
+<span class="p">]</span>
+
+<span class="n">PLUGINS_CONFIG</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;netbox_network_canvas_plugin&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="c1"># Maximum devices per canvas (performance optimization)</span>
+        <span class="s1">&#39;max_devices_per_canvas&#39;</span><span class="p">:</span> <span class="mi">500</span><span class="p">,</span>
+
+        <span class="c1"># Enable caching for better performance</span>
+        <span class="s1">&#39;cache_topology_data&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">},</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<ol>
+<li><strong>Rebuild and Start</strong>
+   <div class="highlight"><pre><span></span><code>docker-compose<span class="w"> </span>down
+docker-compose<span class="w"> </span>build<span class="w"> </span>--no-cache
+docker-compose<span class="w"> </span>up<span class="w"> </span>-d
+</code></pre></div></li>
+</ol>
+<h4 id="method-2-standard-netbox-installation">Method 2: Standard NetBox Installation<a class="headerlink" href="#method-2-standard-netbox-installation" title="Permanent link">&para;</a></h4>
+<p>For traditional NetBox installations:</p>
+<ol>
+<li>
+<p><strong>Install the Plugin</strong>
+   <div class="highlight"><pre><span></span><code><span class="c1"># Activate your NetBox virtual environment</span>
+<span class="nb">source</span><span class="w"> </span>/opt/netbox/venv/bin/activate
+
+<span class="c1"># Install from Git repository</span>
+pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/dashton956-alt/netbox-network-canvas-plugin
+
+<span class="c1"># Or install from local development copy</span>
+pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>/path/to/netbox-network-canvas-plugin
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Configure NetBox</strong></p>
+</li>
+</ol>
+<p>Edit <code>/opt/netbox/netbox/netbox/configuration.py</code>:
+   <div class="highlight"><pre><span></span><code><span class="n">PLUGINS</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;netbox_network_canvas_plugin&#39;</span><span class="p">,</span>
+<span class="p">]</span>
+
+<span class="n">PLUGINS_CONFIG</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;netbox_network_canvas_plugin&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="c1"># Performance settings</span>
+        <span class="s1">&#39;max_devices_per_canvas&#39;</span><span class="p">:</span> <span class="mi">500</span><span class="p">,</span>
+        <span class="s1">&#39;cache_topology_data&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">},</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<ol>
+<li>
+<p><strong>Apply Database Migrations</strong>
+   <div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>/opt/netbox
+python<span class="w"> </span>manage.py<span class="w"> </span>migrate<span class="w"> </span>netbox_network_canvas_plugin
+python<span class="w"> </span>manage.py<span class="w"> </span>collectstatic<span class="w"> </span>--no-input
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Restart NetBox</strong>
+   <div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>systemctl<span class="w"> </span>restart<span class="w"> </span>netbox<span class="w"> </span>netbox-rq
+</code></pre></div></p>
+</li>
+</ol>
+<h4 id="-configuration-options">🔧 Configuration Options<a class="headerlink" href="#-configuration-options" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="n">PLUGINS_CONFIG</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;netbox_network_canvas_plugin&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="c1"># Maximum devices to display per canvas (prevents browser overload)</span>
+        <span class="s1">&#39;max_devices_per_canvas&#39;</span><span class="p">:</span> <span class="mi">500</span><span class="p">,</span>
+
+        <span class="c1"># Cache topology data for improved performance</span>
+        <span class="s1">&#39;cache_topology_data&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+
+        <span class="c1"># Enable debug logging (development only)</span>
+        <span class="s1">&#39;debug_mode&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">},</span>
+<span class="p">}</span>
+</code></pre></div>
+<h4 id="-verify-installation">✅ Verify Installation<a class="headerlink" href="#-verify-installation" title="Permanent link">&para;</a></h4>
+<ol>
+<li><strong>Check Plugin Menu</strong>: Look for <strong>"Network Canvas"</strong> in the NetBox navigation</li>
+<li><strong>Access Dashboard</strong>: Navigate to <strong>Plugins &gt; Network Dashboard</strong></li>
+<li><strong>Check Logs</strong>: Verify no errors in NetBox logs during startup</li>
+</ol>
+<h3 id="-quick-usage-guide">🚀 Quick Usage Guide<a class="headerlink" href="#-quick-usage-guide" title="Permanent link">&para;</a></h3>
+<h4 id="-getting-started-5-minutes">🎯 <strong>Getting Started (5 Minutes)</strong><a class="headerlink" href="#-getting-started-5-minutes" title="Permanent link">&para;</a></h4>
+<ol>
+<li><strong>Access the Plugin</strong></li>
+<li>Navigate to <strong>Plugins &gt; Network Canvas</strong> in your NetBox interface</li>
+<li>
+<p>Or access <strong>Plugins &gt; Network Dashboard</strong> for the live visualization</p>
+</li>
+<li>
+<p><strong>View Your Network</strong></p>
+</li>
+<li>The dashboard automatically displays your current NetBox devices</li>
+<li>Devices are grouped by site with dynamic sizing</li>
+<li>
+<p>Hover over devices for detailed information</p>
+</li>
+<li>
+<p><strong>Create a Custom Canvas</strong> (Optional)</p>
+</li>
+<li>Click <strong>"Create Canvas"</strong> to save specific topology views</li>
+<li>Give it a name and description for future reference</li>
+</ol>
+<h4 id="-interactive-features">🎨 <strong>Interactive Features</strong><a class="headerlink" href="#-interactive-features" title="Permanent link">&para;</a></h4>
+<h5 id="navigation--controls">Navigation &amp; Controls<a class="headerlink" href="#navigation--controls" title="Permanent link">&para;</a></h5>
+<ul>
+<li><strong>🖱️ Mouse Wheel</strong>: Zoom in/out on the topology</li>
+<li><strong>🖱️ Click &amp; Drag</strong>: Pan around the visualization</li>
+<li><strong>🎯 Fit Button</strong>: Auto-zoom to show all devices</li>
+<li><strong>🏷️ Labels Toggle</strong>: Show/hide device names</li>
+</ul>
+<h5 id="device-information">Device Information<a class="headerlink" href="#device-information" title="Permanent link">&para;</a></h5>
+<ul>
+<li><strong>📊 Hover Tooltips</strong>: Rich device details including:</li>
+<li>Device name, type, and role</li>
+<li>Site location and manufacturer</li>
+<li>Device status and interface count</li>
+<li><strong>🎨 Color Coding</strong>: Each device type has a distinct color:</li>
+<li>🔵 <strong>Switches</strong>: Blue tones</li>
+<li>🟢 <strong>Routers</strong>: Green tones  </li>
+<li>🟡 <strong>VMs</strong>: Yellow tones</li>
+<li>🔴 <strong>Firewalls</strong>: Red tones</li>
+<li>🟣 <strong>Access Points</strong>: Purple tones</li>
+</ul>
+<h5 id="site-organization">Site Organization<a class="headerlink" href="#site-organization" title="Permanent link">&para;</a></h5>
+<ul>
+<li><strong>📦 Site Containers</strong>: Devices grouped in rounded site boundaries</li>
+<li><strong>📏 Dynamic Sizing</strong>: Site boxes scale with device count</li>
+<li><strong>🔢 Device Badges</strong>: Corner indicators showing device count per site</li>
+<li><strong>📐 Grid Layout</strong>: Devices arranged in organized grids within sites</li>
+</ul>
+<h4 id="-demo-data-for-testing">📊 <strong>Demo Data for Testing</strong><a class="headerlink" href="#-demo-data-for-testing" title="Permanent link">&para;</a></h4>
+<p>If you need sample data to test the plugin:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Navigate to your NetBox root directory</span>
+<span class="nb">cd</span><span class="w"> </span>/opt/netbox
+
+<span class="c1"># Use the demo data script (included with plugin)</span>
+python<span class="w"> </span>/path/to/netbox-network-canvas-plugin/populate_demo_data.py
+
+<span class="c1"># Or create specific amounts of demo data</span>
+python<span class="w"> </span>populate_demo_data.py<span class="w"> </span>--sites<span class="w"> </span><span class="m">3</span><span class="w"> </span>--devices-per-site<span class="w"> </span><span class="m">8</span>
+</code></pre></div>
+<p>The demo script creates:
+- 🏢 <strong>Sites</strong>: Multiple network sites
+- 🖥️ <strong>Devices</strong>: Routers, switches, firewalls, APs
+- 💾 <strong>VMs</strong>: Virtual machines across sites<br />
+- 🌐 <strong>Networks</strong>: VLANs, IP prefixes, and addressing
+- 🔌 <strong>Infrastructure</strong>: Racks, power, and connections</p>
+<h4 id="-dashboard-features">📱 <strong>Dashboard Features</strong><a class="headerlink" href="#-dashboard-features" title="Permanent link">&para;</a></h4>
+<h5 id="network-statistics-panel">Network Statistics Panel<a class="headerlink" href="#network-statistics-panel" title="Permanent link">&para;</a></h5>
+<ul>
+<li><strong>Device Overview</strong>: Total count by type and status</li>
+<li><strong>Site Summary</strong>: Number of sites and device distribution</li>
+<li><strong>Quick Actions</strong>: Direct links to NetBox sections</li>
+</ul>
+<h5 id="live-topology-view">Live Topology View<a class="headerlink" href="#live-topology-view" title="Permanent link">&para;</a></h5>
+<ul>
+<li><strong>Real-Time Data</strong>: Always shows current NetBox state</li>
+<li><strong>Performance Optimized</strong>: Handles large networks efficiently</li>
+<li><strong>Error Handling</strong>: Graceful fallbacks for missing data</li>
+<li><strong>Mobile Responsive</strong>: Works on tablets and phones</li>
+</ul>
+<h4 id="-canvas-management">🎯 <strong>Canvas Management</strong><a class="headerlink" href="#-canvas-management" title="Permanent link">&para;</a></h4>
+<h5 id="creating-canvases">Creating Canvases<a class="headerlink" href="#creating-canvases" title="Permanent link">&para;</a></h5>
+<ol>
+<li><strong>From Main Menu</strong>: Plugins &gt; Network Canvas &gt; Create Canvas</li>
+<li><strong>From Dashboard</strong>: Click "Create Canvas" button</li>
+<li><strong>Fill Details</strong>:</li>
+<li><strong>Name</strong>: "Main Campus Topology"</li>
+<li><strong>Description</strong>: "Primary site network visualization"</li>
+<li><strong>Save</strong>: Canvas is ready for use</li>
+</ol>
+<h5 id="managing-canvases">Managing Canvases<a class="headerlink" href="#managing-canvases" title="Permanent link">&para;</a></h5>
+<ul>
+<li><strong>📋 List View</strong>: See all created canvases</li>
+<li><strong>✏️ Edit</strong>: Modify canvas name and description</li>
+<li><strong>🗑️ Delete</strong>: Remove unwanted canvases</li>
+<li><strong>🔍 Search</strong>: Find canvases by name or description</li>
+</ul>
+<h3 id="api-endpoints">API Endpoints<a class="headerlink" href="#api-endpoints" title="Permanent link">&para;</a></h3>
+<p>The plugin provides REST API endpoints for integration:</p>
+<h4 id="topology-data-api">Topology Data API<a class="headerlink" href="#topology-data-api" title="Permanent link">&para;</a></h4>
+<p><div class="highlight"><pre><span></span><code><span class="err">GET /api/plugins/network-canvas/api/topology-data/</span>
+</code></pre></div>
+Returns current NetBox topology data in JSON format.</p>
+<p><strong>Parameters:</strong>
+- <code>site</code> - Filter by site ID
+- <code>device_type</code> - Filter by device type<br />
+- <code>limit</code> - Maximum devices to return (default: 100, max: 500)</p>
+<p><strong>Example Response:</strong>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;devices&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">...</span><span class="p">],</span>
+<span class="w">    </span><span class="nt">&quot;interfaces&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">...</span><span class="p">],</span><span class="w"> </span>
+<span class="w">    </span><span class="nt">&quot;connections&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">...</span><span class="p">],</span>
+<span class="w">    </span><span class="nt">&quot;metadata&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;total_devices&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">45</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;generated_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2025-08-14T10:30:00Z&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<h4 id="dashboard-api">Dashboard API<a class="headerlink" href="#dashboard-api" title="Permanent link">&para;</a></h4>
+<p><div class="highlight"><pre><span></span><code><span class="err">GET /api/plugins/network-canvas/dashboard/</span>
+</code></pre></div>
+Provides dashboard data including network statistics.</p>
+<h3 id="development">Development<a class="headerlink" href="#development" title="Permanent link">&para;</a></h3>
+<h4 id="local-development-setup">Local Development Setup<a class="headerlink" href="#local-development-setup" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="c1"># Clone the repository</span>
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/Dashton956-alt/netbox-network-canvas-plugin
+<span class="nb">cd</span><span class="w"> </span>netbox-network-canvas-plugin
+
+<span class="c1"># Create virtual environment</span>
+python<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>venv
+<span class="nb">source</span><span class="w"> </span>venv/bin/activate<span class="w">  </span><span class="c1"># Linux/Mac</span>
+<span class="c1"># OR</span>
+venv<span class="se">\S</span>cripts<span class="se">\a</span>ctivate<span class="w">     </span><span class="c1"># Windows</span>
+
+<span class="c1"># Install dependencies</span>
+pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements_dev.txt
+
+<span class="c1"># Install plugin in development mode</span>
+pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.
+
+<span class="c1"># Run tests</span>
+python<span class="w"> </span>-m<span class="w"> </span>pytest
+
+<span class="c1"># Code formatting</span>
+black<span class="w"> </span>netbox_network_canvas_plugin/
+flake8<span class="w"> </span>netbox_network_canvas_plugin/
+</code></pre></div>
+<h4 id="plugin-architecture">Plugin Architecture<a class="headerlink" href="#plugin-architecture" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code>netbox_network_canvas_plugin/
+├── models.py              # Django models (NetworkTopologyCanvas)
+├── views.py               # Django views and API endpoints  
+├── forms.py               # Django forms for canvas management
+├── tables.py              # Django tables for list views
+├── filtersets.py          # Filtering and search functionality
+├── urls.py                # URL routing configuration
+├── navigation.py          # NetBox menu integration
+├── templates/             # HTML templates
+│   └── netbox_network_canvas_plugin/
+│       ├── dashboard_simple.html      # Main dashboard
+│       ├── network-canvas.html        # Canvas detail view
+│       └── networktopologycanvas_list.html  # Canvas list
+├── static/                # CSS/JavaScript assets
+│   └── netbox_network_canvas_plugin/
+│       └── topology.css               # Professional styling
+├── migrations/            # Database migrations
+│   ├── 0001_initial.py               # Initial model creation
+│   └── 0002_update_model_structure.py # Model updates
+└── __init__.py           # Plugin configuration
+</code></pre></div>
+<h4 id="key-components">Key Components<a class="headerlink" href="#key-components" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Models</strong>: <code>NetworkTopologyCanvas</code> - Stores canvas configurations</li>
+<li><strong>Views</strong>: Dashboard, API endpoints, CRUD operations  </li>
+<li><strong>Templates</strong>: Responsive HTML with D3.js visualization</li>
+<li><strong>Static Assets</strong>: Professional CSS with animations and responsive design</li>
+</ul>
+<h3 id="contributing">Contributing<a class="headerlink" href="#contributing" title="Permanent link">&para;</a></h3>
+<p>We welcome contributions! Please see our <a href="../CONTRIBUTING.md">Contributing Guide</a> for details.</p>
+<h4 id="areas-for-contribution">Areas for Contribution<a class="headerlink" href="#areas-for-contribution" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Additional layout algorithms</li>
+<li>Enhanced VLAN visualization</li>
+<li>Performance optimizations  </li>
+<li>Mobile UI improvements</li>
+<li>Integration with network monitoring tools</li>
+<li>Export format extensions</li>
+</ul>
+<h3 id="-troubleshooting">🛠️ Troubleshooting<a class="headerlink" href="#-troubleshooting" title="Permanent link">&para;</a></h3>
+<h4 id="common-issues--solutions">Common Issues &amp; Solutions<a class="headerlink" href="#common-issues--solutions" title="Permanent link">&para;</a></h4>
+<h5 id="-no-devices-found-in-dashboard">❌ <strong>"No devices found" in Dashboard</strong><a class="headerlink" href="#-no-devices-found-in-dashboard" title="Permanent link">&para;</a></h5>
+<p><strong>Symptoms</strong>: Empty topology view, no devices visible
+<strong>Solutions</strong>:
+<div class="highlight"><pre><span></span><code><span class="c1"># 1. Verify NetBox has device data</span>
+python<span class="w"> </span>manage.py<span class="w"> </span>shell
+&gt;&gt;&gt;<span class="w"> </span>from<span class="w"> </span>dcim.models<span class="w"> </span>import<span class="w"> </span>Device
+&gt;&gt;&gt;<span class="w"> </span>Device.objects.count<span class="o">()</span><span class="w">  </span><span class="c1"># Should return &gt; 0</span>
+
+<span class="c1"># 2. Check device status (must be &#39;active&#39;)</span>
+&gt;&gt;&gt;<span class="w"> </span>Device.objects.filter<span class="o">(</span><span class="nv">status</span><span class="o">=</span><span class="s1">&#39;active&#39;</span><span class="o">)</span>.count<span class="o">()</span>
+
+<span class="c1"># 3. Verify devices have sites assigned</span>
+&gt;&gt;&gt;<span class="w"> </span>Device.objects.filter<span class="o">(</span><span class="nv">site__isnull</span><span class="o">=</span>False<span class="o">)</span>.count<span class="o">()</span>
+</code></pre></div></p>
+<h5 id="-dashboard-loading-slowly">🐌 <strong>Dashboard Loading Slowly</strong><a class="headerlink" href="#-dashboard-loading-slowly" title="Permanent link">&para;</a></h5>
+<p><strong>Symptoms</strong>: Page takes long time to load, browser becomes unresponsive
+<strong>Solutions</strong>:
+- <strong>Reduce Device Count</strong>: Use site filtering in topology view
+- <strong>Optimize Configuration</strong>:
+  <div class="highlight"><pre><span></span><code><span class="n">PLUGINS_CONFIG</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;netbox_network_canvas_plugin&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;max_devices_per_canvas&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>  <span class="c1"># Reduce from 500</span>
+        <span class="s1">&#39;cache_topology_data&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">},</span>
+<span class="p">}</span>
+</code></pre></div>
+- <strong>Check Database Performance</strong>: Ensure NetBox database is optimized</p>
+<h5 id="-visualization-not-displaying">🖥️ <strong>Visualization Not Displaying</strong><a class="headerlink" href="#-visualization-not-displaying" title="Permanent link">&para;</a></h5>
+<p><strong>Symptoms</strong>: Blank canvas area, JavaScript errors in console
+<strong>Solutions</strong>:
+- <strong>Check Browser Console</strong>: Press F12 → Console tab for error details
+- <strong>Modern Browser Required</strong>: Chrome 80+, Firefox 75+, Safari 13+, Edge 80+
+- <strong>JavaScript Enabled</strong>: Verify browser allows JavaScript
+- <strong>Clear Browser Cache</strong>: Force refresh with Ctrl+F5 (or Cmd+Shift+R on Mac)</p>
+<h5 id="-plugin-not-in-navigation-menu">📱 <strong>Plugin Not in Navigation Menu</strong><a class="headerlink" href="#-plugin-not-in-navigation-menu" title="Permanent link">&para;</a></h5>
+<p><strong>Symptoms</strong>: No "Network Canvas" option in NetBox menu
+<strong>Solutions</strong>:
+<div class="highlight"><pre><span></span><code><span class="c1"># 1. Verify plugin is in configuration</span>
+grep<span class="w"> </span>-n<span class="w"> </span><span class="s2">&quot;netbox_network_canvas_plugin&quot;</span><span class="w"> </span>/opt/netbox/netbox/netbox/configuration.py
+
+<span class="c1"># 2. Check plugin installation</span>
+pip<span class="w"> </span>show<span class="w"> </span>netbox-network-canvas-plugin
+
+<span class="c1"># 3. Apply migrations</span>
+python<span class="w"> </span>manage.py<span class="w"> </span>migrate<span class="w"> </span>netbox_network_canvas_plugin
+
+<span class="c1"># 4. Collect static files</span>
+python<span class="w"> </span>manage.py<span class="w"> </span>collectstatic<span class="w"> </span>--no-input
+
+<span class="c1"># 5. Restart NetBox</span>
+sudo<span class="w"> </span>systemctl<span class="w"> </span>restart<span class="w"> </span>netbox<span class="w"> </span>netbox-rq
+</code></pre></div></p>
+<h5 id="-json-serialization-errors">🔧 <strong>JSON Serialization Errors</strong><a class="headerlink" href="#-json-serialization-errors" title="Permanent link">&para;</a></h5>
+<p><strong>Symptoms</strong>: API errors, "device.role has no attribute" errors
+<strong>Cause</strong>: NetBox version compatibility issue
+<strong>Solution</strong>: Ensure you're using <strong>NetBox v4.3.7</strong> (the only tested version)</p>
+<h5 id="-labels-not-visible">🎨 <strong>Labels Not Visible</strong><a class="headerlink" href="#-labels-not-visible" title="Permanent link">&para;</a></h5>
+<p><strong>Symptoms</strong>: Black boxes instead of device labels
+<strong>Solution</strong>: Plugin version 0.1.5+ includes this fix. Update to latest version:
+<div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>git+https://github.com/dashton956-alt/netbox-network-canvas-plugin
+</code></pre></div></p>
+<h4 id="-debug-mode">🔍 Debug Mode<a class="headerlink" href="#-debug-mode" title="Permanent link">&para;</a></h4>
+<p>Enable detailed error logging:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># In NetBox configuration.py</span>
+<span class="n">DEBUG</span> <span class="o">=</span> <span class="kc">True</span>
+
+<span class="n">LOGGING</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;version&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s1">&#39;disable_existing_loggers&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="s1">&#39;handlers&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;console&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;logging.StreamHandler&#39;</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="s1">&#39;file&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;logging.FileHandler&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;filename&#39;</span><span class="p">:</span> <span class="s1">&#39;/opt/netbox/netbox_canvas_debug.log&#39;</span><span class="p">,</span>
+        <span class="p">},</span>
+    <span class="p">},</span>
+    <span class="s1">&#39;loggers&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;netbox_network_canvas_plugin&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;handlers&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;console&#39;</span><span class="p">,</span> <span class="s1">&#39;file&#39;</span><span class="p">],</span>
+            <span class="s1">&#39;level&#39;</span><span class="p">:</span> <span class="s1">&#39;DEBUG&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;propagate&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="p">},</span>
+    <span class="p">},</span>
+<span class="p">}</span>
+</code></pre></div>
+<h4 id="-performance-tips">📊 <strong>Performance Tips</strong><a class="headerlink" href="#-performance-tips" title="Permanent link">&para;</a></h4>
+<h5 id="for-large-networks-500-devices">For Large Networks (500+ devices)<a class="headerlink" href="#for-large-networks-500-devices" title="Permanent link">&para;</a></h5>
+<ol>
+<li><strong>Use Site Filtering</strong>: Focus on specific sites rather than all devices</li>
+<li><strong>Reduce Canvas Limit</strong>: Lower <code>max_devices_per_canvas</code> setting</li>
+<li><strong>Enable Caching</strong>: Set <code>cache_topology_data: True</code></li>
+<li><strong>Browser Optimization</strong>: Use Chrome/Firefox for best performance</li>
+</ol>
+<h5 id="database-optimization">Database Optimization<a class="headerlink" href="#database-optimization" title="Permanent link">&para;</a></h5>
+<div class="highlight"><pre><span></span><code><span class="c1">-- Check NetBox database performance</span>
+<span class="k">EXPLAIN</span><span class="w"> </span><span class="k">ANALYZE</span><span class="w"> </span><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">dcim_device</span><span class="w"> </span>
+<span class="k">JOIN</span><span class="w"> </span><span class="n">dcim_site</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">dcim_device</span><span class="p">.</span><span class="n">site_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dcim_site</span><span class="p">.</span><span class="n">id</span><span class="w"> </span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">dcim_device</span><span class="p">.</span><span class="n">status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;active&#39;</span><span class="p">;</span>
+</code></pre></div>
+<h4 id="-getting-help">🆘 <strong>Getting Help</strong><a class="headerlink" href="#-getting-help" title="Permanent link">&para;</a></h4>
+<ol>
+<li><strong>Check Browser Console</strong>: F12 → Console for JavaScript errors</li>
+<li><strong>Review NetBox Logs</strong>: Check <code>/opt/netbox/logs/</code> for Python errors  </li>
+<li><strong>Verify Configuration</strong>: Ensure plugin is properly configured</li>
+<li><strong>Test with Demo Data</strong>: Use included demo script to isolate issues</li>
+<li><strong>GitHub Issues</strong>: Report bugs at project repository</li>
+</ol>
+<h4 id="-system-requirements-check">📋 <strong>System Requirements Check</strong><a class="headerlink" href="#-system-requirements-check" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="c1"># Verify NetBox version</span>
+python<span class="w"> </span>manage.py<span class="w"> </span>version
+
+<span class="c1"># Check Python version  </span>
+python<span class="w"> </span>--version
+
+<span class="c1"># Verify plugin installation</span>
+python<span class="w"> </span>manage.py<span class="w"> </span>shell
+&gt;&gt;&gt;<span class="w"> </span>import<span class="w"> </span>netbox_network_canvas_plugin
+&gt;&gt;&gt;<span class="w"> </span>print<span class="o">(</span><span class="s2">&quot;Plugin loaded successfully&quot;</span><span class="o">)</span>
+
+<span class="c1"># Check database connectivity</span>
+python<span class="w"> </span>manage.py<span class="w"> </span>dbshell
+</code></pre></div>
+<h4 id="-known-limitations">⚠️ <strong>Known Limitations</strong><a class="headerlink" href="#-known-limitations" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>NetBox Version</strong>: Only tested with v4.3.7</li>
+<li><strong>Browser Support</strong>: Requires modern JavaScript features</li>
+<li><strong>Performance</strong>: Large networks (1000+ devices) may need optimization</li>
+<li><strong>Mobile</strong>: Touch interactions limited on small screens</li>
+</ul>
+<h3 id="-roadmap--future-development">🚀 Roadmap &amp; Future Development<a class="headerlink" href="#-roadmap--future-development" title="Permanent link">&para;</a></h3>
+<h4 id="version-015-current-development-">Version 0.1.5 (Current Development) ✅<a class="headerlink" href="#version-015-current-development-" title="Permanent link">&para;</a></h4>
+<ul>
+<li>[x] <strong>Site-Based Organization</strong>: Devices grouped by NetBox sites with visual boundaries</li>
+<li>[x] <strong>Dynamic Site Sizing</strong>: Automatic resizing based on device count</li>
+<li>[x] <strong>Enhanced Device Types</strong>: Support for routers, switches, VMs, firewalls, APs</li>
+<li>[x] <strong>NetBox v4.3.7 Compatibility</strong>: Complete field mapping and API fixes</li>
+<li>[x] <strong>Professional Styling</strong>: Clear labels, improved colors, responsive design</li>
+<li>[x] <strong>Grid-Based Layout</strong>: Intelligent device positioning within sites</li>
+</ul>
+<h4 id="version-020-planned---q4-2025">Version 0.2.0 (Planned - Q4 2025)<a class="headerlink" href="#version-020-planned---q4-2025" title="Permanent link">&para;</a></h4>
+<ul>
+<li>[ ] <strong>Physical Cable Visualization</strong>: Real cable connections with termination mapping</li>
+<li>[ ] <strong>Enhanced Connection Display</strong>: Show interface-to-interface connections</li>
+<li>[ ] <strong>VLAN Overlay</strong>: Visual representation of VLAN assignments per device</li>
+<li>[ ] <strong>Advanced Filtering</strong>: Filter by device role, manufacturer, status</li>
+<li>[ ] <strong>Export Functionality</strong>: Save topology as PNG, SVG, or PDF</li>
+<li>[ ] <strong>Performance Improvements</strong>: Lazy loading for large networks</li>
+</ul>
+<h4 id="version-030-future---q1-2026">Version 0.3.0 (Future - Q1 2026)<a class="headerlink" href="#version-030-future---q1-2026" title="Permanent link">&para;</a></h4>
+<ul>
+<li>[ ] <strong>Multi-Site Connections</strong>: Visualize site-to-site links and WAN connections</li>
+<li>[ ] <strong>Layer 3 Routing</strong>: Routing table integration with path visualization</li>
+<li>[ ] <strong>Network Path Tracing</strong>: Click-to-trace network paths between devices</li>
+<li>[ ] <strong>Historical Views</strong>: Compare topology changes over time</li>
+<li>[ ] <strong>Advanced Layout Algorithms</strong>: Hierarchical, circular, and custom layouts</li>
+<li>[ ] <strong>Real-Time Updates</strong>: WebSocket integration for live network changes</li>
+</ul>
+<h4 id="version-100-future---q2-2026">Version 1.0.0 (Future - Q2 2026)<a class="headerlink" href="#version-100-future---q2-2026" title="Permanent link">&para;</a></h4>
+<ul>
+<li>[ ] <strong>Network Discovery Integration</strong>: LLDP/CDP-based topology discovery</li>
+<li>[ ] <strong>Monitoring Tool Integration</strong>: SNMP, Prometheus, Grafana connectivity</li>
+<li>[ ] <strong>Mobile App</strong>: Dedicated mobile application for topology viewing</li>
+<li>[ ] <strong>Advanced Analytics</strong>: Network metrics and topology analysis</li>
+<li>[ ] <strong>Multi-Tenancy</strong>: Tenant-aware topology views</li>
+<li>[ ] <strong>Custom Device Icons</strong>: Upload and manage custom device graphics</li>
+</ul>
+<h4 id="-research--experimental">🔬 <strong>Research &amp; Experimental</strong><a class="headerlink" href="#-research--experimental" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>AI-Powered Layout</strong>: Machine learning for optimal device positioning</li>
+<li><strong>3D Visualization</strong>: Three-dimensional network topology views</li>
+<li><strong>AR/VR Support</strong>: Augmented reality network visualization</li>
+<li><strong>Network Simulation</strong>: What-if scenario planning and modeling</li>
+<li><strong>Automated Documentation</strong>: Generate network diagrams and reports</li>
+</ul>
+<h4 id="-community-requests">📊 <strong>Community Requests</strong><a class="headerlink" href="#-community-requests" title="Permanent link">&para;</a></h4>
+<p><em>Help us prioritize development! Submit feature requests via GitHub Issues</em></p>
+<p><strong>Most Requested Features:</strong>
+1. <strong>Cable/Connection Visualization</strong> (In Progress - v0.2.0)
+2. <strong>VLAN Overlay Display</strong> (Planned - v0.2.0)<br />
+3. <strong>Export/Print Functionality</strong> (Planned - v0.2.0)
+4. <strong>Custom Device Icons</strong> (Future - v1.0.0)
+5. <strong>Real-Time Updates</strong> (Future - v0.3.0)</p>
+<h4 id="-contributing-to-development">🤝 <strong>Contributing to Development</strong><a class="headerlink" href="#-contributing-to-development" title="Permanent link">&para;</a></h4>
+<p>We welcome contributions in these areas:</p>
+<h5 id="code-contributions"><strong>Code Contributions</strong><a class="headerlink" href="#code-contributions" title="Permanent link">&para;</a></h5>
+<ul>
+<li><strong>Frontend</strong>: D3.js visualization improvements</li>
+<li><strong>Backend</strong>: Django/NetBox API enhancements</li>
+<li><strong>Testing</strong>: Unit tests and integration testing</li>
+<li><strong>Documentation</strong>: User guides and API documentation</li>
+</ul>
+<h5 id="non-code-contributions"><strong>Non-Code Contributions</strong><a class="headerlink" href="#non-code-contributions" title="Permanent link">&para;</a></h5>
+<ul>
+<li><strong>Testing</strong>: Report bugs and compatibility issues</li>
+<li><strong>Design</strong>: UI/UX improvements and mockups</li>
+<li><strong>Documentation</strong>: Tutorials and best practices</li>
+<li><strong>Community</strong>: Help other users in discussions</li>
+</ul>
+<h4 id="-development-metrics">📈 <strong>Development Metrics</strong><a class="headerlink" href="#-development-metrics" title="Permanent link">&para;</a></h4>
+<p><strong>Version 0.1.5 Progress:</strong>
+- ✅ 15+ GitHub commits
+- ✅ 5 major features implemented
+- ✅ NetBox v4.3.7 full compatibility
+- ✅ Comprehensive demo data toolkit
+- ✅ Professional UI overhaul</p>
+<p><strong>Project Stats:</strong>
+- 🏗️ <strong>Architecture</strong>: Django plugin with D3.js frontend
+- 🧪 <strong>Testing</strong>: NetBox v4.3.7 verified
+- 📚 <strong>Documentation</strong>: Comprehensive README and changelog
+- 🌟 <strong>Features</strong>: Site organization, device types, dynamic layouts</p>
+<h3 id="-license">📄 License<a class="headerlink" href="#-license" title="Permanent link">&para;</a></h3>
+<p>This project is licensed under the <strong>MIT License</strong> - see the <a href="../LICENSE">LICENSE</a> file for details.</p>
+<p><strong>Key Points:</strong>
+- ✅ Free for commercial and personal use
+- ✅ Modify and distribute freely<br />
+- ✅ No warranty or liability
+- ✅ Attribution required</p>
+<h3 id="-credits--acknowledgments">👥 Credits &amp; Acknowledgments<a class="headerlink" href="#-credits--acknowledgments" title="Permanent link">&para;</a></h3>
+<h4 id="-primary-developer">🚀 <strong>Primary Developer</strong><a class="headerlink" href="#-primary-developer" title="Permanent link">&para;</a></h4>
+<p><strong>Daniel Ashton</strong> - <em>Project Creator &amp; Lead Developer</em>
+- GitHub: <a href="https://github.com/dashton956-alt">@dashton956-alt</a>
+- Specialization: NetBox plugins, network visualization, Django development</p>
+<h4 id="-built-with">🛠️ <strong>Built With</strong><a class="headerlink" href="#-built-with" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong><a href="https://github.com/netbox-community/netbox">NetBox</a></strong> - Network documentation and DCIM platform by NetBox Labs</li>
+<li><strong><a href="https://www.djangoproject.com/">Django</a></strong> - High-level Python web framework</li>
+<li><strong><a href="https://d3js.org/">D3.js</a></strong> - Data-driven documents and visualization library</li>
+<li><strong><a href="https://getbootstrap.com/">Bootstrap</a></strong> - Frontend CSS framework</li>
+<li><strong><a href="https://fontawesome.com/">FontAwesome</a></strong> - Icon library for device type representations</li>
+</ul>
+<h4 id="-learning-resources">📚 <strong>Learning Resources</strong><a class="headerlink" href="#-learning-resources" title="Permanent link">&para;</a></h4>
+<p>This plugin was developed using excellent NetBox community resources:</p>
+<ul>
+<li><strong><a href="https://github.com/netbox-community/netbox-plugin-tutorial">NetBox Plugin Tutorial</a></strong> - Comprehensive plugin development guide</li>
+<li><strong><a href="https://github.com/netbox-community/netbox-plugin-demo">NetBox Plugin Demo</a></strong> - Reference implementation</li>
+<li><strong><a href="https://github.com/netbox-community/cookiecutter-netbox-plugin">Cookiecutter NetBox Plugin</a></strong> - Project template</li>
+</ul>
+<h4 id="-netbox-community">🌟 <strong>NetBox Community</strong><a class="headerlink" href="#-netbox-community" title="Permanent link">&para;</a></h4>
+<p>Special thanks to the NetBox community for:
+- Comprehensive documentation and examples
+- Active support forums and discussions<br />
+- Open-source ecosystem and plugin architecture
+- Continuous platform improvements and stability</p>
+<h4 id="-development-tools">🔧 <strong>Development Tools</strong><a class="headerlink" href="#-development-tools" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong><a href="https://github.com/audreyr/cookiecutter">Cookiecutter</a></strong> - Project template generation</li>
+<li><strong>Python Packaging</strong> - setuptools, pip, and PyPI ecosystem</li>
+<li><strong>Git/GitHub</strong> - Version control and collaboration platform</li>
+<li><strong>VS Code</strong> - Development environment and debugging</li>
+</ul>
+<h4 id="-inspiration--references">📊 <strong>Inspiration &amp; References</strong><a class="headerlink" href="#-inspiration--references" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Network Topology Visualization</strong> best practices from D3.js community</li>
+<li><strong>DCIM Platform Integration</strong> patterns from NetBox plugin ecosystem</li>
+<li><strong>Modern Web UI Design</strong> principles for professional dashboards</li>
+<li><strong>Network Engineering</strong> workflows and visualization requirements</li>
+</ul>
+<h4 id="-contributing">🤝 <strong>Contributing</strong><a class="headerlink" href="#-contributing" title="Permanent link">&para;</a></h4>
+<p>We welcome contributions! See <a href="../CONTRIBUTING.md">CONTRIBUTING.md</a> for guidelines.</p>
+<p><strong>Areas for Contribution:</strong>
+- 🎨 <strong>Frontend</strong>: D3.js visualizations and UI improvements
+- 🔧 <strong>Backend</strong>: Django views, API endpoints, and database optimization<br />
+- 🧪 <strong>Testing</strong>: Unit tests, integration tests, and compatibility testing
+- 📖 <strong>Documentation</strong>: User guides, API docs, and tutorials
+- 🐛 <strong>Bug Reports</strong>: Issue identification and troubleshooting
+- 💡 <strong>Feature Requests</strong>: New functionality ideas and requirements</p>
+<h4 id="-support--community">📞 <strong>Support &amp; Community</strong><a class="headerlink" href="#-support--community" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>GitHub Issues</strong>: Bug reports and feature requests</li>
+<li><strong>GitHub Discussions</strong>: Community support and Q&amp;A</li>
+<li><strong>NetBox Slack</strong>: Join the NetBox community Slack workspace</li>
+<li><strong>Documentation</strong>: Comprehensive guides in this README</li>
+</ul>
+<hr />
+<p><strong>⭐ If this plugin helps you, please consider starring the repository!</strong></p>
+<p><em>NetBox Network Canvas Plugin - Making network topology visualization accessible and beautiful.</em></p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://github.com/netbox-community/cookiecutter-netbox-plugin" target="_blank" rel="noopener" title="Tweet" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M459.4 151.7c.3 4.5.3 9.1.3 13.6 0 138.7-105.6 298.6-298.6 298.6-59.5 0-114.7-17.2-161.1-47.1 8.4 1 16.6 1.3 25.3 1.3 49.1 0 94.2-16.6 130.3-44.8-46.1-1-84.8-31.2-98.1-72.8 6.5 1 13 1.6 19.8 1.6 9.4 0 18.8-1.3 27.6-3.6-48.1-9.7-84.1-52-84.1-103v-1.3c14 7.8 30.2 12.7 47.4 13.3-28.3-18.8-46.8-51-46.8-87.4 0-19.5 5.2-37.4 14.3-53C87.4 130.8 165 172.4 252.1 176.9c-1.6-7.8-2.6-15.9-2.6-24C249.5 95.1 296.3 48 354.4 48c30.2 0 57.5 12.7 76.7 33.1 23.7-4.5 46.5-13.3 66.6-25.3-7.8 24.4-24.4 44.8-46.1 57.8 21.1-2.3 41.6-8.1 60.4-16.2-14.3 20.8-32.2 39.3-52.6 54.3"/></svg>
+    </a>
+  
+    
+    
+    
+    
+    <a href="https://github.com/netbox-community/cookiecutter-netbox-plugin" target="_blank" rel="noopener" title="Facebook" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M512 256C512 114.6 397.4 0 256 0S0 114.6 0 256c0 120 82.7 220.8 194.2 248.5V334.2h-52.8V256h52.8v-33.7c0-87.1 39.4-127.5 125-127.5 16.2 0 44.2 3.2 55.7 6.4V172c-6-.6-16.5-1-29.6-1-42 0-58.2 15.9-58.2 57.2V256h83.6l-14.4 78.2H287v175.9C413.8 494.8 512 386.9 512 256"/></svg>
+    </a>
+  
+    
+    
+    
+    
+    <a href="https://github.com/dashton956-alt/netbox-network-canvas-plugin" target="_blank" rel="noopener" title="Github" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+    
+    
+    
+    
+    <a href="mailto:" target="_blank" rel="noopener" title="" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m20 8-8 5-8-5V6l8 5 8-5m0-2H4c-1.11 0-2 .89-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": ".", "features": ["navigation.indexes", "navigation.instant", "navigation.tabs.sticky"], "search": "assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="assets/javascripts/bundle.92b07e13.min.js"></script>
+      
+    
+  </body>
+</html>

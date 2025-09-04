@@ -1,0 +1,894 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://dashton956-alt.github.io/netbox-network-canvas-plugin/changelog/">
+      
+      
+        <link rel="prev" href="../contributing/">
+      
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.18">
+    
+    
+      
+        <title>Changelog - NetBox Network Canvas Plugin</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.7e37652d.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="preference" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#changelog" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="NetBox Network Canvas Plugin" class="md-header__button md-logo" aria-label="NetBox Network Canvas Plugin" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            NetBox Network Canvas Plugin
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Changelog
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/dashton956-alt/netbox-network-canvas-plugin" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    dashton956-alt/netbox-network-canvas-plugin
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="NetBox Network Canvas Plugin" class="md-nav__button md-logo" aria-label="NetBox Network Canvas Plugin" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    NetBox Network Canvas Plugin
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/dashton956-alt/netbox-network-canvas-plugin" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    dashton956-alt/netbox-network-canvas-plugin
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../contributing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Contributing
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Changelog
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    Changelog
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#changelog" class="md-nav__link">
+    <span class="md-ellipsis">
+      Changelog
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Changelog">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#015-2025-09-04---site-based-hierarchical-topology" class="md-nav__link">
+    <span class="md-ellipsis">
+      0.1.5 (2025-09-04) - Site-Based Hierarchical Topology
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="0.1.5 (2025-09-04) - Site-Based Hierarchical Topology">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#-major-features-added" class="md-nav__link">
+    <span class="md-ellipsis">
+      🚀 Major Features Added
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-visual-enhancements" class="md-nav__link">
+    <span class="md-ellipsis">
+      🎨 Visual Enhancements
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-technical-improvements" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔧 Technical Improvements
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-layout-specifications" class="md-nav__link">
+    <span class="md-ellipsis">
+      📊 Layout Specifications
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-bug-fixes" class="md-nav__link">
+    <span class="md-ellipsis">
+      🐛 Bug Fixes
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#014-2025-09-02---development-baseline" class="md-nav__link">
+    <span class="md-ellipsis">
+      0.1.4 (2025-09-02) - Development Baseline
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="0.1.4 (2025-09-02) - Development Baseline">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#-major-visualization-enhancements" class="md-nav__link">
+    <span class="md-ellipsis">
+      🎯 Major Visualization Enhancements
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-technical-improvements_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔧 Technical Improvements
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-user-interface" class="md-nav__link">
+    <span class="md-ellipsis">
+      🎨 User Interface
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-bug-fixes_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      🐛 Bug Fixes
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#014-2025-09-02" class="md-nav__link">
+    <span class="md-ellipsis">
+      0.1.4 (2025-09-02)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="0.1.4 (2025-09-02)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#-demo-data-and-compatibility" class="md-nav__link">
+    <span class="md-ellipsis">
+      📊 Demo Data and Compatibility
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-infrastructure" class="md-nav__link">
+    <span class="md-ellipsis">
+      🏗️ Infrastructure
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#010-2025-08-14" class="md-nav__link">
+    <span class="md-ellipsis">
+      0.1.0 (2025-08-14)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#changelog" class="md-nav__link">
+    <span class="md-ellipsis">
+      Changelog
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Changelog">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#015-2025-09-04---site-based-hierarchical-topology" class="md-nav__link">
+    <span class="md-ellipsis">
+      0.1.5 (2025-09-04) - Site-Based Hierarchical Topology
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="0.1.5 (2025-09-04) - Site-Based Hierarchical Topology">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#-major-features-added" class="md-nav__link">
+    <span class="md-ellipsis">
+      🚀 Major Features Added
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-visual-enhancements" class="md-nav__link">
+    <span class="md-ellipsis">
+      🎨 Visual Enhancements
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-technical-improvements" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔧 Technical Improvements
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-layout-specifications" class="md-nav__link">
+    <span class="md-ellipsis">
+      📊 Layout Specifications
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-bug-fixes" class="md-nav__link">
+    <span class="md-ellipsis">
+      🐛 Bug Fixes
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#014-2025-09-02---development-baseline" class="md-nav__link">
+    <span class="md-ellipsis">
+      0.1.4 (2025-09-02) - Development Baseline
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="0.1.4 (2025-09-02) - Development Baseline">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#-major-visualization-enhancements" class="md-nav__link">
+    <span class="md-ellipsis">
+      🎯 Major Visualization Enhancements
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-technical-improvements_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔧 Technical Improvements
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-user-interface" class="md-nav__link">
+    <span class="md-ellipsis">
+      🎨 User Interface
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-bug-fixes_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      🐛 Bug Fixes
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#014-2025-09-02" class="md-nav__link">
+    <span class="md-ellipsis">
+      0.1.4 (2025-09-02)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="0.1.4 (2025-09-02)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#-demo-data-and-compatibility" class="md-nav__link">
+    <span class="md-ellipsis">
+      📊 Demo Data and Compatibility
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-infrastructure" class="md-nav__link">
+    <span class="md-ellipsis">
+      🏗️ Infrastructure
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#010-2025-08-14" class="md-nav__link">
+    <span class="md-ellipsis">
+      0.1.0 (2025-08-14)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+  <h1>Changelog</h1>
+
+<h2 id="changelog">Changelog<a class="headerlink" href="#changelog" title="Permanent link">&para;</a></h2>
+<h3 id="015-2025-09-04---site-based-hierarchical-topology">0.1.5 (2025-09-04) - Site-Based Hierarchical Topology<a class="headerlink" href="#015-2025-09-04---site-based-hierarchical-topology" title="Permanent link">&para;</a></h3>
+<h4 id="-major-features-added">🚀 <strong>Major Features Added</strong><a class="headerlink" href="#-major-features-added" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Site-Based Network Topology</strong>: Complete redesign with white site containers grouping devices by NetBox site</li>
+<li><strong>Hierarchical Device Layout</strong>: North-to-south arrangement (Core → Distribution → Access layers)</li>
+<li><strong>Draggable &amp; Resizable Sites</strong>: Interactive site containers with drag/drop and resize handles</li>
+<li><strong>Local D3.js Integration</strong>: 279KB local D3.js v7 library with CDN fallback for reliability</li>
+<li><strong>No Overlap Prevention</strong>: Intelligent 900x700px site spacing prevents container overlap</li>
+</ul>
+<h4 id="-visual-enhancements">🎨 <strong>Visual Enhancements</strong><a class="headerlink" href="#-visual-enhancements" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Light Grey Device Circles</strong>: Improved contrast with #e9ecef fill and #6c757d stroke</li>
+<li><strong>Enhanced Device Spacing</strong>: 95px horizontal, 90px vertical spacing for hostname readability</li>
+<li><strong>Professional Styling</strong>: NetBox blue background with white site containers and drop shadows</li>
+<li><strong>Improved Typography</strong>: 12px device labels with white backgrounds and proper contrast</li>
+<li><strong>Layer Labels</strong>: Clear hierarchy indicators for Core, Distribution, and Access layers</li>
+</ul>
+<h4 id="-technical-improvements">🔧 <strong>Technical Improvements</strong><a class="headerlink" href="#-technical-improvements" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Enhanced Topology Data Loading</strong>: Real NetBox sites and devices with comprehensive error handling</li>
+<li><strong>Defensive Programming</strong>: Null/undefined protection for device properties and string operations</li>
+<li><strong>Debug Logging</strong>: Console output for device distribution, site mapping, and category breakdown</li>
+<li><strong>Fixed JavaScript Syntax</strong>: Resolved template variable injection and function scope issues</li>
+<li><strong>Updated MANIFEST.in</strong>: Proper static file distribution including local D3.js library</li>
+</ul>
+<h4 id="-layout-specifications">📊 <strong>Layout Specifications</strong><a class="headerlink" href="#-layout-specifications" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Site Containers</strong>: Minimum 650x400px with 140px internal padding</li>
+<li><strong>Device Circles</strong>: 28px radius with professional styling and hover effects</li>
+<li><strong>Spacing Standards</strong>: 50px between hierarchy layers, 25px after layer labels</li>
+<li><strong>Row Spacing</strong>: 90px vertical spacing between device rows for clear separation</li>
+<li><strong>Grid Layout</strong>: 6 devices per row with automatic row wrapping</li>
+</ul>
+<h4 id="-bug-fixes">🐛 <strong>Bug Fixes</strong><a class="headerlink" href="#-bug-fixes" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Fixed device overlapping with layer labels by adjusting positioning</li>
+<li>Resolved missing devices in sites through improved data filtering</li>
+<li>Corrected JavaScript syntax errors from template variable escaping</li>
+<li>Fixed site group selection using proper D3.js filtering methods</li>
+<li>Improved error handling for missing device properties and site assignments</li>
+</ul>
+<h3 id="014-2025-09-02---development-baseline">0.1.4 (2025-09-02) - Development Baseline<a class="headerlink" href="#014-2025-09-02---development-baseline" title="Permanent link">&para;</a></h3>
+<h4 id="-major-visualization-enhancements">🎯 <strong>Major Visualization Enhancements</strong><a class="headerlink" href="#-major-visualization-enhancements" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Site-Based Organization</strong>: Complete redesign with devices grouped by NetBox sites</li>
+<li><strong>Dynamic Site Sizing</strong>: Site containers automatically resize based on device count</li>
+<li><strong>Enhanced Device Types</strong>: Extended support for routers, switches, VMs, firewalls, and access points</li>
+<li><strong>Professional Styling</strong>: Improved visual hierarchy with clear labels and device type icons</li>
+</ul>
+<h4 id="-technical-improvements_1">🔧 <strong>Technical Improvements</strong><a class="headerlink" href="#-technical-improvements_1" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>NetBox v4.3.7 Compatibility</strong>: Fixed JSON serialization issues in topology data API</li>
+<li><strong>Grid-Based Layout</strong>: Intelligent device positioning within site boundaries</li>
+<li><strong>Label Clarity</strong>: White background labels with borders for improved readability</li>
+<li><strong>Device Count Badges</strong>: Visual indicators showing device count per site</li>
+</ul>
+<h4 id="-user-interface">🎨 <strong>User Interface</strong><a class="headerlink" href="#-user-interface" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Interactive Site Boundaries</strong>: Visual separation of network sites with rounded containers</li>
+<li><strong>Color-Coded Device Types</strong>: Consistent color scheme for different device categories</li>
+<li><strong>Responsive Design</strong>: Improved layout scaling for different screen sizes</li>
+<li><strong>Enhanced Tooltips</strong>: Rich device information with hover interactions</li>
+</ul>
+<h4 id="-bug-fixes_1">🐛 <strong>Bug Fixes</strong><a class="headerlink" href="#-bug-fixes_1" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Fixed device.role vs device.device_role field compatibility issues</li>
+<li>Resolved JSON parsing errors in topology data views</li>
+<li>Corrected site relationship handling for NetBox v4.3.7</li>
+<li>Fixed label visibility issues (replaced black boxes with clear labels)</li>
+</ul>
+<h3 id="014-2025-09-02">0.1.4 (2025-09-02)<a class="headerlink" href="#014-2025-09-02" title="Permanent link">&para;</a></h3>
+<h4 id="-demo-data-and-compatibility">📊 <strong>Demo Data and Compatibility</strong><a class="headerlink" href="#-demo-data-and-compatibility" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Expanded populate_demo_data.py script with comprehensive NetBox objects</li>
+<li>Added support for VMs, circuits, IP addressing, VLANs, prefixes, and racks</li>
+<li>Added clear_netbox_data.py script for cleaning demo data</li>
+<li>Fixed compatibility issues with NetBox v4.3.7</li>
+<li>Created baseline working version with essential functionality</li>
+</ul>
+<h4 id="-infrastructure">🏗️ <strong>Infrastructure</strong><a class="headerlink" href="#-infrastructure" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Established Git workflow with feature branching</li>
+<li>Updated version management and package configuration</li>
+<li>Enhanced project documentation and setup instructions</li>
+</ul>
+<h3 id="010-2025-08-14">0.1.0 (2025-08-14)<a class="headerlink" href="#010-2025-08-14" title="Permanent link">&para;</a></h3>
+<ul>
+<li>First release on PyPI.</li>
+<li>Initial NetBox plugin structure</li>
+<li>Basic network topology visualization</li>
+<li>Django integration and navigation setup</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://github.com/netbox-community/cookiecutter-netbox-plugin" target="_blank" rel="noopener" title="Tweet" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M459.4 151.7c.3 4.5.3 9.1.3 13.6 0 138.7-105.6 298.6-298.6 298.6-59.5 0-114.7-17.2-161.1-47.1 8.4 1 16.6 1.3 25.3 1.3 49.1 0 94.2-16.6 130.3-44.8-46.1-1-84.8-31.2-98.1-72.8 6.5 1 13 1.6 19.8 1.6 9.4 0 18.8-1.3 27.6-3.6-48.1-9.7-84.1-52-84.1-103v-1.3c14 7.8 30.2 12.7 47.4 13.3-28.3-18.8-46.8-51-46.8-87.4 0-19.5 5.2-37.4 14.3-53C87.4 130.8 165 172.4 252.1 176.9c-1.6-7.8-2.6-15.9-2.6-24C249.5 95.1 296.3 48 354.4 48c30.2 0 57.5 12.7 76.7 33.1 23.7-4.5 46.5-13.3 66.6-25.3-7.8 24.4-24.4 44.8-46.1 57.8 21.1-2.3 41.6-8.1 60.4-16.2-14.3 20.8-32.2 39.3-52.6 54.3"/></svg>
+    </a>
+  
+    
+    
+    
+    
+    <a href="https://github.com/netbox-community/cookiecutter-netbox-plugin" target="_blank" rel="noopener" title="Facebook" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M512 256C512 114.6 397.4 0 256 0S0 114.6 0 256c0 120 82.7 220.8 194.2 248.5V334.2h-52.8V256h52.8v-33.7c0-87.1 39.4-127.5 125-127.5 16.2 0 44.2 3.2 55.7 6.4V172c-6-.6-16.5-1-29.6-1-42 0-58.2 15.9-58.2 57.2V256h83.6l-14.4 78.2H287v175.9C413.8 494.8 512 386.9 512 256"/></svg>
+    </a>
+  
+    
+    
+    
+    
+    <a href="https://github.com/dashton956-alt/netbox-network-canvas-plugin" target="_blank" rel="noopener" title="Github" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+    
+    
+    
+    
+    <a href="mailto:" target="_blank" rel="noopener" title="" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m20 8-8 5-8-5V6l8 5 8-5m0-2H4c-1.11 0-2 .89-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "..", "features": ["navigation.indexes", "navigation.instant", "navigation.tabs.sticky"], "search": "../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.92b07e13.min.js"></script>
+      
+    
+  </body>
+</html>
