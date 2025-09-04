@@ -1,0 +1,866 @@
+{% extends 'base/layout.html' %}
+{% load static %}
+
+{% block title %}Enhanced Network Canvas Dashboard{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" type="text/css" href="{% static 'netbox_network_canvas_plugin/topology.css' %}">
+    <style>
+        .topology-container {
+            background: #ffffff;
+            border: 1px solid #dee2e6;
+            border-radius: 0.375rem;
+            overflow: hidden;
+        }
+        
+        .topology-stats {
+            background: var(--bs-light, #f8f9fa);
+            padding: 1.5rem;
+            border-radius: 0.375rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--bs-border-color, #dee2e6);
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 1rem;
+            background: #ffffff;
+            border-radius: 0.375rem;
+            border: 1px solid var(--bs-border-color, #dee2e6);
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        }
+        
+        .stat-number {
+            display: block;
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--bs-primary, #0d6efd);
+        }
+        
+        .stat-label {
+            display: block;
+            font-size: 0.875rem;
+            color: var(--bs-secondary, #6c757d);
+            margin-top: 0.25rem;
+        }
+        
+        .topology-loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            min-height: 400px;
+        }
+        
+        .spinner {
+            width: 3rem;
+            height: 3rem;
+            border: 0.25rem solid var(--bs-border-color, #dee2e6);
+            border-top: 0.25rem solid var(--bs-primary, #0d6efd);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .topology-controls {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+        
+        .topology-legend {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 1rem;
+            border-radius: 0.375rem;
+            border: 1px solid var(--bs-border-color, #dee2e6);
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+            min-width: 150px;
+        }
+        
+        .topology-legend h6 {
+            margin: 0 0 0.75rem 0;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--bs-dark, #212529);
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+        }
+        
+        .legend-color {
+            width: 1rem;
+            height: 1rem;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+            border: 2px solid #ffffff;
+        }
+        
+        /* Device styling */
+        .device-node circle {
+            stroke: #fff;
+            stroke-width: 2;
+        }
+        
+        .device-icon {
+            font-size: 14px;
+            fill: white;
+            text-anchor: middle;
+            dominant-baseline: central;
+        }
+        
+        .device-label {
+            font-size: 11px;
+            fill: #212529;
+            text-anchor: middle;
+            font-weight: 500;
+        }
+        
+        .device-label-background {
+            fill: rgba(255, 255, 255, 0.9);
+            stroke: #dee2e6;
+            stroke-width: 1;
+            rx: 3;
+            ry: 3;
+        }
+        
+        .connection-line {
+            stroke: #495057;
+            stroke-width: 2;
+            opacity: 0.7;
+        }
+        
+        /* Device type colors */
+        .device-router circle { fill: #dc3545; }
+        .device-switch circle { fill: #28a745; }
+        .device-firewall circle { fill: #007bff; }
+        .device-server circle { fill: #6f42c1; }
+        .device-ap circle { fill: #fd7e14; }
+        .device-vm circle { fill: #e83e8c; }
+        .device-unknown circle { fill: #6c757d; }
+        
+        .legend-color.device-router { background-color: #dc3545; }
+        .legend-color.device-switch { background-color: #28a745; }
+        .legend-color.device-firewall { background-color: #007bff; }
+        .legend-color.device-server { background-color: #6f42c1; }
+        .legend-color.device-ap { background-color: #fd7e14; }
+        .legend-color.device-vm { background-color: #e83e8c; }
+        .legend-color.device-unknown { background-color: #6c757d; }
+        
+        .selected {
+            stroke-width: 4 !important;
+            filter: drop-shadow(0 0 10px rgba(13, 110, 253, 0.5));
+        }
+        
+        .topology-tooltip {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 0.75rem;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            max-width: 250px;
+            z-index: 1000;
+            pointer-events: none;
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+        }
+        
+        .topology-tooltip h6 {
+            margin: 0 0 0.5rem 0;
+            color: #ffffff;
+        }
+        
+        .tooltip-detail {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.25rem;
+        }
+        
+        .tooltip-detail .label {
+            font-weight: 600;
+            color: #cccccc;
+        }
+        
+        .tooltip-detail .value {
+            color: #ffffff;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1>Enhanced Network Canvas Dashboard</h1>
+                <p class="text-muted">Site-based network topology with hierarchical device layout - draggable and resizable</p>
+            </div>
+            <div>
+                <a href="{% url 'plugins:netbox_network_canvas_plugin:networktopologycanvas_list' %}" class="btn btn-outline-primary">
+                    <i class="mdi mdi-view-list"></i> View All Canvases
+                </a>
+                <a href="{% url 'plugins:netbox_network_canvas_plugin:networktopologycanvas_add' %}" class="btn btn-success">
+                    <i class="mdi mdi-plus"></i> Create Canvas
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Network Statistics -->
+<div class="topology-stats">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="stat-item">
+                <span class="stat-number">{{ device_count }}</span>
+                <span class="stat-label">Devices</span>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-item">
+                <span class="stat-number">{{ canvas_count }}</span>
+                <span class="stat-label">Canvas Views</span>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-item">
+                <span class="stat-number">{{ vlan_count }}</span>
+                <span class="stat-label">VLANs</span>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-item">
+                <span class="stat-number">{{ cable_count }}</span>
+                <span class="stat-label">Connections</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">Enhanced Live Network Topology</h5>
+                <div class="topology-controls">
+                    <button id="refresh-btn" class="btn btn-primary btn-sm">
+                        <i class="mdi mdi-refresh"></i> Refresh
+                    </button>
+                    <button id="zoom-fit-btn" class="btn btn-outline-secondary btn-sm">
+                        <i class="mdi mdi-fit-to-page"></i> Fit
+                    </button>
+                    <button id="toggle-labels-btn" class="btn btn-outline-secondary btn-sm">
+                        <i class="mdi mdi-label"></i> Labels
+                    </button>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                <div id="topology-container" class="topology-container" style="width: 100%; height: 600px; position: relative;">
+                    <div id="loading" class="topology-loading">
+                        <div class="topology-loading">
+                            <div class="spinner"></div>
+                            <p class="mt-3">Loading enhanced network topology...</p>
+                        </div>
+                    </div>
+                    <svg id="network-svg" width="100%" height="100%" style="display: none;"></svg>
+                    
+                    <!-- Legend -->
+                    <div class="topology-legend">
+                        <h6>Device Types</h6>
+                        <div class="legend-item">
+                            <div class="legend-color device-router"></div>
+                            <span>Router/Firewall</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color device-switch"></div>
+                            <span>Switch</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color device-server"></div>
+                            <span>Server</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color device-ap"></div>
+                            <span>Access Point</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color device-vm"></div>
+                            <span>Virtual Machine</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script src="{% static 'netbox_network_canvas_plugin/js/d3.v7.min.js' %}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Initializing Enhanced Network Topology Visualization v0.1.4 style...');
+    
+    const svg = d3.select('#network-svg');
+    const container = document.getElementById('topology-container');
+    const width = container.clientWidth;
+    const height = container.clientHeight;
+    
+    let showLabels = true;
+    let hierarchyMode = false;
+    let currentTransform = d3.zoomIdentity;
+    
+    svg.attr('viewBox', `0 0 ${width} ${height}`);
+    
+    // Add zoom behavior
+    const zoom = d3.zoom()
+        .scaleExtent([0.1, 4])
+        .on('zoom', (event) => {
+            currentTransform = event.transform;
+            g.attr('transform', event.transform);
+        });
+    
+    svg.call(zoom);
+    
+    const g = svg.append('g');
+    
+    try {
+        // Get enhanced data from Django template
+        console.log('Loading topology data...');
+        const enhancedDataRaw = '{{ topology_data_json|escapejs }}';
+        console.log('Raw data length:', enhancedDataRaw.length);
+        
+        if (!enhancedDataRaw || enhancedDataRaw === 'None' || enhancedDataRaw.length < 10) {
+            throw new Error('No topology data available');
+        }
+        
+        const enhancedData = JSON.parse(enhancedDataRaw);
+        console.log('Enhanced topology data loaded:', enhancedData);
+        
+        if (!enhancedData || !enhancedData.sites || enhancedData.sites.length === 0) {
+            throw new Error('No topology data available from NetBox');
+        }
+        
+        console.log('Sites available:', enhancedData.sites.length);
+        console.log('Devices available:', enhancedData.devices ? enhancedData.devices.length : 0);
+        
+        // Log device distribution by site
+        if (enhancedData.devices) {
+            const devicesBySite = {};
+            enhancedData.devices.forEach(device => {
+                const siteId = device.site_id;
+                if (!devicesBySite[siteId]) devicesBySite[siteId] = 0;
+                devicesBySite[siteId]++;
+            });
+            console.log('Devices by site ID:', devicesBySite);
+        }
+        
+        // Convert enhanced data to v0.1.4 format
+        const topologyData = convertToSimpleFormat(enhancedData);
+        
+        if (!topologyData.devices || topologyData.devices.length === 0) {
+            throw new Error('No devices found in NetBox. Please add some devices first.');
+        }
+        
+        console.log(`Loaded ${topologyData.devices.length} devices and ${topologyData.connections?.length || 0} connections`);
+        
+        createVisualization(topologyData);
+        
+    } catch (error) {
+        console.error('Error loading topology:', error);
+        showError(error.message);
+    }
+    
+    function convertToSimpleFormat(enhancedData) {
+        // Keep the enhanced site-based structure for proper hierarchy
+        return {
+            sites: enhancedData.sites || [],
+            devices: enhancedData.devices || [],
+            connections: enhancedData.connections || [],
+            stats: {
+                total_devices: enhancedData.devices ? enhancedData.devices.length : 0,
+                total_connections: enhancedData.connections ? enhancedData.connections.length : 0,
+                total_sites: enhancedData.sites ? enhancedData.sites.length : 0
+            }
+        };
+    }
+    
+    function createVisualization(data) {
+        console.log('Creating site-based visualization with hierarchy...');
+        
+        if (!data.sites || data.sites.length === 0) {
+            throw new Error('No sites available for visualization');
+        }
+        
+        const sites = data.sites;
+        const devices = data.devices;
+        
+        // Calculate site positions and dimensions
+        const sitePositions = {};
+        const siteDimensions = {};
+        
+        sites.forEach((site, index) => {
+            const siteDevices = devices.filter(d => d.site_id === site.id);
+            const categories = categorizeDevicesByHierarchy(siteDevices);
+            
+            // Calculate site dimensions based on device count and hierarchy
+            const maxDevicesPerRow = 6;
+            const coreRows = Math.ceil(categories.core.length / maxDevicesPerRow);
+            const distRows = Math.ceil(categories.distribution.length / maxDevicesPerRow);
+            const accessRows = Math.ceil(categories.access.length / maxDevicesPerRow);
+            
+            const totalRows = Math.max(coreRows + distRows + accessRows, 1);
+            const deviceSpacing = 95; // Increased for better hostname visibility
+            const rowSpacing = 150; // Increased for better vertical spacing between device rows
+            const sitePadding = 140; // Increased padding for larger spacing
+            
+            const siteWidth = Math.max(maxDevicesPerRow * deviceSpacing + sitePadding * 2, 650); // Increased minimum width
+            const siteHeight = Math.max(totalRows * rowSpacing + sitePadding * 2 + 150, 400); // Increased minimum height
+            
+            // Position sites in a grid to prevent overlap
+            const sitesPerRow = 2;
+            const row = Math.floor(index / sitesPerRow);
+            const col = index % sitesPerRow;
+            const siteSpacingX = 900; // Increased spacing to prevent overlap
+            const siteSpacingY = 700; // Increased spacing to prevent overlap
+            
+            sitePositions[site.id] = {
+                x: col * siteSpacingX + 50,
+                y: row * siteSpacingY + 50
+            };
+            
+            siteDimensions[site.id] = {
+                width: siteWidth,
+                height: siteHeight
+            };
+        });
+        
+        // Create site containers with drag functionality
+        const siteGroups = g.selectAll('.site-group')
+            .data(sites)
+            .enter()
+            .append('g')
+            .attr('class', 'site-group site-container')
+            .attr('transform', d => `translate(${sitePositions[d.id].x}, ${sitePositions[d.id].y})`)
+            .style('cursor', 'move');
+        
+        // Add site boundaries (white boxes)
+        siteGroups.append('rect')
+            .attr('class', 'site-boundary')
+            .attr('width', d => siteDimensions[d.id].width)
+            .attr('height', d => siteDimensions[d.id].height)
+            .attr('rx', 8)
+            .style('fill', '#ffffff')
+            .style('stroke', '#dee2e6')
+            .style('stroke-width', '2px')
+            .style('opacity', 0.95)
+            .style('filter', 'drop-shadow(0 2px 8px rgba(0,0,0,0.1))')
+            .style('cursor', 'move');
+        
+        // Add resize handles at bottom-right corner
+        siteGroups.append('rect')
+            .attr('class', 'resize-handle')
+            .attr('width', 15)
+            .attr('height', 15)
+            .attr('x', d => siteDimensions[d.id].width - 15)
+            .attr('y', d => siteDimensions[d.id].height - 15)
+            .style('fill', '#0d6efd')
+            .style('cursor', 'nw-resize')
+            .style('opacity', 0.3);
+        
+        // Add site labels with better positioning
+        siteGroups.append('rect')
+            .attr('class', 'site-label-bg')
+            .attr('x', 8)
+            .attr('y', 8)
+            .attr('width', d => Math.min(siteDimensions[d.id].width - 16, d.name.length * 12 + 16))
+            .attr('height', 28)
+            .attr('rx', 4)
+            .style('fill', '#0d6efd')
+            .style('opacity', 0.9);
+            
+        siteGroups.append('text')
+            .attr('class', 'site-label')
+            .attr('x', 16)
+            .attr('y', 28)
+            .style('fill', 'white')
+            .style('font-weight', '700')
+            .style('font-size', '14px')
+            .text(d => d.name);
+        
+        // Add devices with hierarchical positioning within each site
+        sites.forEach(site => {
+            const siteDevices = devices.filter(d => d.site_id === site.id);
+            console.log(`Site ${site.name} (ID: ${site.id}) has ${siteDevices.length} devices`);
+            
+            if (siteDevices.length === 0) {
+                console.log(`Warning: Site ${site.name} has no devices`);
+                return; // Skip empty sites
+            }
+            
+            const categories = categorizeDevicesByHierarchy(siteDevices);
+            console.log(`Site ${site.name} categories:`, {
+                core: categories.core.length,
+                distribution: categories.distribution.length,
+                access: categories.access.length
+            });
+            
+            const siteGroup = g.selectAll('.site-group')
+                .filter(d => d.id === site.id);
+            
+            let currentY = 80; // Start below site label
+            const maxDevicesPerRow = 6;
+            const deviceSpacing = 95; // Increased spacing for hostname visibility
+            const rowSpacing = 130; // Increased row spacing
+            
+            // Render devices by hierarchy: Core -> Distribution -> Access
+            ['core', 'distribution', 'access'].forEach(layer => {
+                if (categories[layer].length > 0) {
+                    // Add layer label
+                    siteGroup.append('text')
+                        .attr('class', 'hierarchy-label')
+                        .attr('x', 20)
+                        .attr('y', currentY - 15) // Moved label higher to avoid overlap
+                        .style('fill', '#6c757d')
+                        .style('font-weight', '600')
+                        .style('font-size', '12px')
+                        .text(layer.charAt(0).toUpperCase() + layer.slice(1) + ' Layer');
+                    
+                    // Add space after layer label before devices
+                    currentY += 25; // Add space between label and first device row
+                    
+                    // Render devices in this layer
+                    categories[layer].forEach((device, index) => {
+                        const row = Math.floor(index / maxDevicesPerRow);
+                        const col = index % maxDevicesPerRow;
+                        
+                        const deviceX = 60 + col * deviceSpacing;
+                        const deviceY = currentY + row * 90; // Increased from 70 to 90 for more row spacing
+                        
+                        // Create device group
+                        const deviceGroup = siteGroup.append('g')
+                            .attr('class', 'device-node')
+                            .attr('transform', `translate(${deviceX}, ${deviceY})`);
+                        
+                        // Device circle
+                        deviceGroup.append('circle')
+                            .attr('r', 28)
+                            .style('fill', '#e9ecef')
+                            .style('stroke', '#6c757d')
+                            .style('stroke-width', '2px')
+                            .style('filter', 'drop-shadow(0 1px 3px rgba(0,0,0,0.2))');
+                        
+                        // Device icon
+                        deviceGroup.append('text')
+                            .attr('class', 'device-icon')
+                            .attr('text-anchor', 'middle')
+                            .attr('dy', '0.35em')
+                            .style('font-size', '20px')
+                            .style('fill', '#0d6efd')
+                            .text(device.device_type ? getDeviceIcon(getDeviceType(device.device_type)) : '❓');
+                        
+                        // Device label background
+                        const deviceName = device.name || `Device ${device.id}`;
+                        const labelWidth = Math.max(deviceName.length * 8, 60); // Increased width
+                        deviceGroup.append('rect')
+                            .attr('x', -labelWidth/2)
+                            .attr('y', 35)
+                            .attr('width', labelWidth)
+                            .attr('height', 18) // Increased height
+                            .attr('rx', 3)
+                            .style('fill', '#ffffff')
+                            .style('stroke', '#dee2e6')
+                            .style('stroke-width', '1px')
+                            .style('opacity', 0.95);
+                        
+                        // Device label
+                        deviceGroup.append('text')
+                            .attr('class', 'device-label')
+                            .attr('text-anchor', 'middle')
+                            .attr('y', 47) // Adjusted for new height
+                            .style('font-size', '12px') // Increased font size
+                            .style('font-weight', '600')
+                            .style('fill', '#212529')
+                            .text(deviceName.length > 12 ? deviceName.substring(0, 12) + '...' : deviceName);
+                    });
+                    
+                    // Update currentY for next layer
+                    const layerRows = Math.ceil(categories[layer].length / maxDevicesPerRow);
+                    currentY += layerRows * 90 + 50; // Increased spacing between layers and rows
+                }
+            });
+        });
+        
+        // Add drag behavior to sites
+        siteGroups.call(d3.drag()
+            .on('start', function(event, d) {
+                d3.select(this).select('.site-boundary').style('stroke-width', '3px');
+            })
+            .on('drag', function(event, d) {
+                const transform = d3.select(this).attr('transform');
+                const newTransform = `translate(${event.x}, ${event.y})`;
+                d3.select(this).attr('transform', newTransform);
+                sitePositions[d.id] = { x: event.x, y: event.y };
+            })
+            .on('end', function(event, d) {
+                d3.select(this).select('.site-boundary').style('stroke-width', '2px');
+            }));
+        
+        // Add resize functionality
+        siteGroups.selectAll('.resize-handle')
+            .call(d3.drag()
+                .on('start', function(event) {
+                    event.sourceEvent.stopPropagation(); // Prevent site drag
+                })
+                .on('drag', function(event, d) {
+                    const newWidth = Math.max(400, event.x + 15);
+                    const newHeight = Math.max(300, event.y + 15);
+                    
+                    const siteGroup = d3.select(this.parentNode);
+                    siteGroup.select('.site-boundary')
+                        .attr('width', newWidth)
+                        .attr('height', newHeight);
+                    
+                    siteGroup.select('.resize-handle')
+                        .attr('x', newWidth - 15)
+                        .attr('y', newHeight - 15);
+                    
+                    siteDimensions[d.id] = { width: newWidth, height: newHeight };
+                }));
+        
+                
+        // Control buttons
+        document.getElementById('refresh-btn').addEventListener('click', () => {
+            location.reload();
+        });
+        
+        document.getElementById('zoom-fit-btn').addEventListener('click', () => {
+            const bounds = g.node().getBBox();
+            const fullWidth = width;
+            const fullHeight = height;
+            const widthScale = fullWidth / bounds.width;
+            const heightScale = fullHeight / bounds.height;
+            const scale = Math.min(widthScale, heightScale) * 0.9;
+            const translate = [
+                (fullWidth - bounds.width * scale) / 2 - bounds.x * scale,
+                (fullHeight - bounds.height * scale) / 2 - bounds.y * scale
+            ];
+            
+            svg.transition()
+                .duration(750)
+                .call(zoom.transform, d3.zoomIdentity.translate(translate[0], translate[1]).scale(scale));
+        });
+        
+        document.getElementById('toggle-labels-btn').addEventListener('click', () => {
+            showLabels = !showLabels;
+            g.selectAll('.device-label').style('display', showLabels ? 'block' : 'none');
+            document.getElementById('toggle-labels-btn').innerHTML = 
+                showLabels ? '<i class="mdi mdi-label"></i> Labels' : '<i class="mdi mdi-label-off"></i> Labels';
+        });
+        
+        // Show visualization
+        d3.select('#loading').style('display', 'none');
+        svg.style('display', 'block');
+        
+        console.log('Site-based network topology visualization loaded successfully!');
+    }
+    
+    function applyHierarchicalLayout(simulation, nodes) {
+        // This function is no longer needed with site-based layout
+        console.log('Hierarchical layout is built into the site-based visualization');
+    }
+    
+    function applyForceLayout(simulation, nodes) {
+        // This function is no longer needed with site-based layout  
+        console.log('Force layout not applicable to site-based visualization');
+    }
+    
+    // Helper function to categorize devices by network hierarchy
+    function categorizeDevicesByHierarchy(devices) {
+        const categories = {
+            core: [],        // Routers, firewalls (top)
+            distribution: [], // Switches (middle)
+            access: []       // APs, servers, VMs (bottom)
+        };
+        
+        devices.forEach(device => {
+            const type = (device.device_type || '').toLowerCase();
+            const role = (device.device_role || '').toLowerCase();
+            
+            if (type.includes('router') || type.includes('firewall') || 
+                role.includes('router') || role.includes('firewall')) {
+                categories.core.push(device);
+            } else if (type.includes('switch') || role.includes('switch')) {
+                categories.distribution.push(device);
+            } else {
+                categories.access.push(device);
+            }
+        });
+        
+        return categories;
+    }
+    
+    function applyHierarchicalLayout(simulation, nodes) {
+        // Group devices by type for hierarchical layout
+        const layers = {
+            core: nodes.filter(d => d.type === 'router' || d.type === 'firewall'),
+            distribution: nodes.filter(d => d.type === 'switch'),
+            access: nodes.filter(d => d.type === 'server' || d.type === 'ap' || d.type === 'vm')
+        };
+        
+        const layerHeight = height / 4;
+        
+        // Position core devices at top
+        layers.core.forEach((d, i) => {
+            d.fx = (width / (layers.core.length + 1)) * (i + 1);
+            d.fy = layerHeight;
+        });
+        
+        // Position distribution devices in middle
+        layers.distribution.forEach((d, i) => {
+            d.fx = (width / (layers.distribution.length + 1)) * (i + 1);
+            d.fy = layerHeight * 2;
+        });
+        
+        // Position access devices at bottom
+        layers.access.forEach((d, i) => {
+            d.fx = (width / (layers.access.length + 1)) * (i + 1);
+            d.fy = layerHeight * 3;
+        });
+        
+        simulation.alpha(0.3).restart();
+    }
+    
+    function applyForceLayout(simulation, nodes) {
+        // Remove fixed positions
+        nodes.forEach(d => {
+            d.fx = null;
+            d.fy = null;
+        });
+        simulation.alpha(0.3).restart();
+    }
+    
+    function showTooltip(event, d) {
+        const tooltip = d3.select('body')
+            .append('div')
+            .attr('class', 'topology-tooltip')
+            .style('left', (event.pageX + 10) + 'px')
+            .style('top', (event.pageY - 10) + 'px');
+        
+        tooltip.html(`
+            <h6>${d.name}</h6>
+            <div class="tooltip-detail">
+                <span class="label">Type:</span>
+                <span class="value">${d.deviceType}</span>
+            </div>
+            <div class="tooltip-detail">
+                <span class="label">Site:</span>
+                <span class="value">${d.site}</span>
+            </div>
+            <div class="tooltip-detail">
+                <span class="label">Role:</span>
+                <span class="value">${d.role}</span>
+            </div>
+            <div class="tooltip-detail">
+                <span class="label">Manufacturer:</span>
+                <span class="value">${d.manufacturer}</span>
+            </div>
+            <div class="tooltip-detail">
+                <span class="label">Interfaces:</span>
+                <span class="value">${d.interfaceCount}</span>
+            </div>
+        `);
+    }
+    
+    function hideTooltip() {
+        d3.selectAll('.topology-tooltip').remove();
+    }
+    
+    function showError(message) {
+        d3.select('#loading').html(`
+            <div class="text-center">
+                <i class="mdi mdi-alert-circle" style="font-size: 48px; color: #dc3545;"></i>
+                <h5 class="mt-3 text-danger">Visualization Error</h5>
+                <p class="text-muted">${message}</p>
+                <p class="text-muted">Make sure you have devices configured in NetBox.</p>
+                <button class="btn btn-primary" onclick="location.reload()">Reload</button>
+            </div>
+        `);
+    }
+    
+    // Helper functions
+    function getDeviceType(model) {
+        const modelLower = model.toLowerCase();
+        if (modelLower.includes('switch') || modelLower.includes('catalyst') || modelLower.includes('nexus')) return 'switch';
+        if (modelLower.includes('router') || modelLower.includes('isr') || modelLower.includes('mx') || modelLower.includes('asr')) return 'router';
+        if (modelLower.includes('server') || modelLower.includes('poweredge') || modelLower.includes('proliant')) return 'server';
+        if (modelLower.includes('firewall') || modelLower.includes('pa-') || modelLower.includes('asa')) return 'firewall';
+        if (modelLower.includes('ap') || modelLower.includes('access point') || modelLower.includes('aironet')) return 'ap';
+        if (modelLower.includes('vm') || modelLower.includes('virtual')) return 'vm';
+        return 'unknown';
+    }
+    
+    function getDeviceIcon(type) {
+        const icons = {
+            'switch': '⚡',
+            'router': '🔀',
+            'server': '💻',
+            'firewall': '🛡️',
+            'ap': '📡',
+            'vm': '🖥️',
+            'unknown': '❓'
+        };
+        return icons[type] || icons.unknown;
+    }
+    
+    function getNodeRadius(device) {
+        const baseRadius = 20;
+        const interfaceBonus = Math.min(device.interfaceCount * 1, 8);
+        return baseRadius + interfaceBonus;
+    }
+    
+    function getConnectionWidth(link) {
+        if (link.status === 'connected') return 2;
+        if (link.status === 'planned') return 1;
+        return 1;
+    }
+});
+</script>
+<script>
+// Add fallback for D3.js CDN
+if (typeof d3 === 'undefined') {
+    console.log('Loading D3.js from CDN fallback...');
+    const script = document.createElement('script');
+    script.src = 'https://d3js.org/d3.v7.min.js';
+    script.onload = function() {
+        console.log('D3.js loaded from CDN');
+        // Re-run the initialization
+        const event = new Event('DOMContentLoaded');
+        document.dispatchEvent(event);
+    };
+    script.onerror = function() {
+        console.error('Failed to load D3.js from CDN');
+        document.getElementById('loading').innerHTML = `
+            <div class="text-center">
+                <i class="mdi mdi-alert-circle" style="font-size: 48px; color: #dc3545;"></i>
+                <h5 class="mt-3 text-danger">Library Error</h5>
+                <p class="text-muted">Failed to load D3.js visualization library</p>
+                <button class="btn btn-primary" onclick="location.reload()">Reload</button>
+            </div>
+        `;
+    };
+    document.head.appendChild(script);
+}
+</script>
+{% endblock %}

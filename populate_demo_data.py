@@ -175,6 +175,79 @@ def create_demo_data(sites=2, devices_per_site=20):
                     address=f"10.{site_num}.0.{host}/24", tenant=tenant
                 )
 
+    # Create some test cables between devices for visualization
+    print("🔌 Creating test cables between devices...")
+    try:
+        # Get all switches and routers to connect them
+        switches = Device.objects.filter(role__name='Switch')[:5]
+        routers = Device.objects.filter(role__name='Router')[:3]
+        
+        cable_count = 0
+        
+        # Connect switches to routers
+        for i, switch in enumerate(switches):
+            if i < len(routers):
+                router = routers[i % len(routers)]
+                
+                # Get interfaces
+                switch_interfaces = switch.interfaces.filter(name__icontains='eth0')[:1]
+                router_interfaces = router.interfaces.filter(name__icontains='eth0')[:1]
+                
+                if switch_interfaces and router_interfaces:
+                    switch_interface = switch_interfaces[0]
+                    router_interface = router_interfaces[0]
+                    
+                    # Create cable
+                    cable, created = Cable.objects.get_or_create(
+                        defaults={
+                            'type': 'cat6',
+                            'status': 'connected',
+                            'length': 5,
+                            'length_unit': 'm'
+                        }
+                    )
+                    
+                    if created:
+                        # Add terminations
+                        cable.a_terminations.create(termination=switch_interface)
+                        cable.b_terminations.create(termination=router_interface)
+                        cable_count += 1
+        
+        # Connect some switches together
+        for i in range(len(switches) - 1):
+            switch_a = switches[i]
+            switch_b = switches[i + 1]
+            
+            # Get available interfaces
+            switch_a_interfaces = switch_a.interfaces.filter(name__icontains='eth1')[:1]
+            switch_b_interfaces = switch_b.interfaces.filter(name__icontains='eth1')[:1]
+            
+            if switch_a_interfaces and switch_b_interfaces:
+                interface_a = switch_a_interfaces[0]
+                interface_b = switch_b_interfaces[0]
+                
+                # Create cable
+                cable, created = Cable.objects.get_or_create(
+                    defaults={
+                        'type': 'cat6',
+                        'status': 'connected',
+                        'length': 3,
+                        'length_unit': 'm'
+                    }
+                )
+                
+                if created:
+                    # Add terminations
+                    cable.a_terminations.create(termination=interface_a)
+                    cable.b_terminations.create(termination=interface_b)
+                    cable_count += 1
+        
+        print(f"✅ Created {cable_count} test cables")
+        
+    except Exception as e:
+        print(f"⚠️ Warning: Could not create test cables: {e}")
+        print("This is normal if cables already exist or if NetBox version doesn't support this method")
+
     print("✅ Comprehensive demo data created successfully!")
     print(f"Created {sites} sites with racks, VLANs, prefixes, 20 devices, 5 VMs, circuits, and IPs per site.")
 

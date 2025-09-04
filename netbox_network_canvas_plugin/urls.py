@@ -18,5 +18,7 @@ urlpatterns = (
     ),
     # API endpoints
     path("api/topology-data/", views.TopologyDataView.as_view(), name="api_topology_data"),
+    path("api/debug-data/", views.DebugDataView.as_view(), name="api_debug_data"),
     path("dashboard/", views.DashboardView.as_view(), name="dashboard"),
+    path("enhanced-dashboard/", views.EnhancedDashboardView.as_view(), name="enhanced_dashboard"),
 )
