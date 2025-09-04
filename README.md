@@ -1,8 +1,8 @@
---# NetBox Network Canvas Plugin
+# NetBox Network Canvas Plugin
 
-🚀 **Advanced Interactive Network Topology Visualization for NetBox**
+🚀 **Advanced Site-Based Network Topology Visualization for NetBox v0.1.5**
 
-Transform your NetBox DCIM/IPAM data into beautiful, interactive network topology diagrams with real-time visualization, site-based organization, and comprehensive device mapping.
+Transform your NetBox DCIM/IPAM data into beautiful, interactive network topology diagrams with hierarchical device layout, draggable site containers, and professional enterprise-ready styling.
 
 ![Network Topology Visualization](https://via.placeholder.com/800x400/007bff/ffffff?text=Interactive+Network+Topology+Canvas)
 
