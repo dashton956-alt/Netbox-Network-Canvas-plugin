@@ -1,5 +1,7 @@
-#!/usr/bin/env python
+import importlib
 
-"""Tests for `netbox_network_canvas_plugin` package."""
 
-from netbox_network_canvas_plugin import netbox_network_canvas_plugin
+def test_import_package_and_version():
+	pkg = importlib.import_module('netbox_network_canvas_plugin')
+	assert hasattr(pkg, '__version__')
+	assert isinstance(pkg.__version__, str)

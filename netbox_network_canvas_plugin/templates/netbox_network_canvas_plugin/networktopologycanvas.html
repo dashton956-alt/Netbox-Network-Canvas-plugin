@@ -7,7 +7,7 @@
         <i class="mdi mdi-chart-network"></i> Canvas Actions
     </button>
     <ul class="dropdown-menu">
-        <li><a class="dropdown-item" href="{% url 'plugins:netbox_network_canvas_plugin:dashboard' %}">View Dashboard</a></li>
+    <li><a class="dropdown-item" href="{% url 'plugins:netbox_network_canvas_plugin:enhanced_dashboard' %}">View Dashboard</a></li>
     </ul>
 </div>
 {% endblock extra_controls %}
@@ -59,7 +59,7 @@
                 {% else %}
                     <p class="text-muted">No topology data available.</p>
                 {% endif %}
-                <a href="{% url 'plugins:netbox_network_canvas_plugin:dashboard' %}" class="btn btn-primary">
+                <a href="{% url 'plugins:netbox_network_canvas_plugin:enhanced_dashboard' %}" class="btn btn-primary">
                     <i class="mdi mdi-chart-network"></i> View in Dashboard
                 </a>
             </div>
