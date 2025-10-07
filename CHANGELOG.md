@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.1.7 (2025-10-07) - UI & Namespace Cleanup
+
+### 🔁 What changed
+* Removed legacy `/plugins/network-canvas/dashboard/` route and the old "Create Canvas" link from enhanced dashboard templates.
+* Fixed Django URL namespacing by adding `app_name = 'netbox_network_canvas_plugin'` to `urls.py`.
+* Updated navigation to point directly at the enhanced dashboard (removed duplicate legacy menu item).
+
+### ✅ Notes
+* Code and templates updated for v0.1.7; package metadata bumped to 0.1.7.
+* Please run `pip install --no-deps --upgrade --force-reinstall .` in your NetBox venv to install the new version and restart NetBox.
+
 ## 0.1.5 (2025-09-04) - Site-Based Hierarchical Topology
 
 ### 🚀 **Major Features Added**
