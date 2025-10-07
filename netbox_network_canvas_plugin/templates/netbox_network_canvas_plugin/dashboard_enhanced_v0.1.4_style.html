@@ -210,9 +210,7 @@
                 <a href="{% url 'plugins:netbox_network_canvas_plugin:networktopologycanvas_list' %}" class="btn btn-outline-primary">
                     <i class="mdi mdi-view-list"></i> View All Canvases
                 </a>
-                <a href="{% url 'plugins:netbox_network_canvas_plugin:networktopologycanvas_add' %}" class="btn btn-success">
-                    <i class="mdi mdi-plus"></i> Create Canvas
-                </a>
+                <!-- Create Canvas removed from enhanced dashboard (v0.1.4 style) to avoid linking to legacy create view -->
             </div>
         </div>
     </div>
@@ -568,7 +566,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             .attr('dy', '0.35em')
                             .style('font-size', '20px')
                             .style('fill', '#0d6efd')
-                            .text(device.device_type ? getDeviceIcon(getDeviceType(device.device_type)) : '❓');
+                            .text(device.device_type ? getDeviceIcon(getDeviceType(device.device_type?.model || device.device_type)) : '❓');
                         
                         // Device label background
                         const deviceName = device.name || `Device ${device.id}`;
@@ -695,7 +693,7 @@ document.addEventListener('DOMContentLoaded', function() {
         };
         
         devices.forEach(device => {
-            const type = (device.device_type || '').toLowerCase();
+            const type = (device.device_type?.model || device.device_type || '').toString().toLowerCase();
             const role = (device.device_role || '').toLowerCase();
             
             if (type.includes('router') || type.includes('firewall') || 
